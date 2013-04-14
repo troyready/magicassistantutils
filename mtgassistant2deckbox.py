@@ -11,9 +11,9 @@ import csv
 from os.path import expanduser
 home = expanduser("~")
 
-stagingfile = home + "/deckboxstaging.csv"
-invfile = home + "/deckboxinventory.csv"
-wishfile = home + "/deckboxwishlist.csv"
+stagingfile = home + "/magicdeckboxstaging.csv"
+invfile = home + "/magicdeckboxinventory.csv"
+wishfile = home + "/magicdeckboxwishlist.csv"
 
 with open(stagingfile,"rb") as source:
 #with open(filename,"rb") as source:
