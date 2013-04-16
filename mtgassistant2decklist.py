@@ -12,7 +12,7 @@ from time import strftime
 from os.path import expanduser
 home = expanduser("~")
 
-stagingfile = home + "/magicdeckboxstaging.csv"
+stagingfile = home + "/magicassistantutils/magicdeckboxstaging.csv"
 invfile = home + "/Ubuntu One/magiccollection.dec"
 wishfile = home + "/Ubuntu One/magicwishlist.dec"
 
