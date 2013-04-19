@@ -100,4 +100,7 @@ with open(stagingfile,"rb") as source:
             if "loan to me" in r[5]:
                 wishwtr.writerow([r[4].replace("\"","").replace(" ","")] + [r[1].decode("ascii", "ignore").encode("ascii").replace("ther Membrane","Aether Membrane").replace("therize","Aetherize").replace("Death (Death)","Death").replace("Ice (Fire)","Ice")] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012")] + ["Near Mint"] + ["English"])
             else:
-                wishrdr.next()
+                try:
+                    wishrdr.next()
+                except:
+                    break
