@@ -23,7 +23,7 @@ with open(stagingfile,"rb") as source:
         wtr= csv.writer( result, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         wtr.writerow((["Count"] + ["Tradelist Count"] + ["Name"] + ["Foil"] + ["Textless"] + ["Promo"] + ["Signed"] + ["Edition"] + ["Condition"] + ["Language"]))
         for r in rdr:
-            # Check for foil or promo status
+            # Check for foil, promo, or condition status
             if len(r) > 7:
                 if len(r) > 8:
                     if "foil" in r[8]:
@@ -34,6 +34,14 @@ with open(stagingfile,"rb") as source:
                         promostatus = "promo"
                     else:
                         promostatus = ""
+                    if "mint" in r[8]:
+                        condition = "Mint"
+                    elif "nearmint" in r[8]:
+                        condition = "Near Mint"
+                    elif "played" in r[8]:
+                        condition = "Played"
+                    else:
+                        condition = "Near Mint"
                 else:
                     if "foil" in r[7]:
                         foilstatus = "foil"
@@ -43,9 +51,18 @@ with open(stagingfile,"rb") as source:
                         promostatus = "promo"
                     else:
                         promostatus = ""
+                    if "mint" in r[7]:
+                        condition = "Mint"
+                    elif "nearmint" in r[7]:
+                        condition = "Near Mint"
+                    elif "played" in r[7]:
+                        condition = "Played"
+                    else:
+                        condition = "Near Mint"
             else:
                 foilstatus = ""
                 promostatus = ""
+                condition = "Near Mint"
             # Set tradecount based on the number available
             # Set all non promo foils to trade status
             if ("foil" in foilstatus) and ("promo" not in promostatus):
@@ -61,7 +78,7 @@ with open(stagingfile,"rb") as source:
                 tradecount = 0
             # Write the line to the file
             if "loan to me" not in r[5]:
-                wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [r[1].decode("ascii", "ignore").encode("ascii").replace("ther Membrane","Aether Membrane").replace("therize","Aetherize").replace("Death (Death)","Death").replace("Ice (Fire)","Ice")] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012")] + ["Near Mint"] + ["English"])
+                wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [r[1].decode("ascii", "ignore").encode("ascii").replace("ther Membrane","Aether Membrane").replace("therize","Aetherize").replace("Death (Death)","Death").replace("Ice (Fire)","Ice")] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012")] + [condition] + ["English"])
             else:
                 rdr.next()
 
