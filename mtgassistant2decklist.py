@@ -24,7 +24,7 @@ with open(stagingfile,"rb") as source:
         result.write('// Generated on ' + strftime("%Y-%m-%d %H:%M:%S") + '\n')
         for r in rdr:
             if "loan to me" not in r[5]:
-                result.write(' ' + r[4] + ' ' + r[1].decode("ascii", "ignore").encode("ascii").replace("ther Membrane","Aether Membrane").replace("therize","Aetherize").replace("Death (Death)","Death").replace("Ice (Fire)","Ice") + '\n')
+                result.write(' ' + r[4] + ' ' + r[1] + '\n')
             else:
                 rdr.next()
 

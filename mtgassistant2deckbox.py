@@ -1,6 +1,8 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import csv
+import re
 
 #from Tkinter import Tk
 #from tkFileDialog import askopenfilename
@@ -76,9 +78,14 @@ with open(stagingfile,"rb") as source:
             # If in a duel deck, none are available
             if ("Duel Deck" in r[2]):
                 tradecount = 0
+            # Set up the name
+            if ("(" in r[1]):
+                cardname = r[1].replace("Æ","Ae").split(" (")[0]
+            else:
+                cardname = r[1].replace("Æ","Ae")
             # Write the line to the file
             if "loan to me" not in r[5]:
-                wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [r[1].decode("ascii", "ignore").encode("ascii").replace("ther Membrane","Aether Membrane").replace("therize","Aetherize").replace("Death (Death)","Death").replace("Ice (Fire)","Ice")] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012")] + [condition] + ["English"])
+                wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012")] + [condition] + ["English"])
             else:
                 rdr.next()
 
@@ -114,8 +121,13 @@ with open(stagingfile,"rb") as source:
             else:
                 foilstatus = ""
                 promostatus = ""
+            # Set up the name
+            if ("(" in r[1]):
+                cardname = r[1].replace("Æ","Ae").split(" (")[0]
+            else:
+                cardname = r[1].replace("Æ","Ae")
             if "loan to me" in r[5]:
-                wishwtr.writerow([r[4].replace("\"","").replace(" ","")] + [r[1].decode("ascii", "ignore").encode("ascii").replace("ther Membrane","Aether Membrane").replace("therize","Aetherize").replace("Death (Death)","Death").replace("Ice (Fire)","Ice")] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012")] + ["Near Mint"] + ["English"])
+                wishwtr.writerow([r[4].replace("\"","").replace(" ","")] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012")] + ["Near Mint"] + ["English"])
             else:
                 try:
                     wishrdr.next()
