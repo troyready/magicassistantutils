@@ -3,13 +3,14 @@
 
 def main():
   import argparse
-  parser = argparse.ArgumentParser(description='Takes Magic Assistant collections & turn them into DeckBox CSVs.')
+  parser = argparse.ArgumentParser(description='Takes Magic Assistant collections & turn them into Deckbox.org CSVs & Apprentice-format .DECs.')
   parser.add_argument('--inputfile', dest='collection', default='', help='Set a specific collection to be converted. (default=~/Dropbox/MagicAssistantWorkspace/magiccards/Collections/main.xml')
   parser.add_argument('--inputdir', default='', help='Set a directory to search for files which comprise your collection. (default=~/Dropbox/MagicAssistantWorkspace/)')
   parser.add_argument('--inventoryoutputfile', default='', help='Full path to the desired inventory output file. Requires --decklistoutputfile if used. (default=magicdeckboxinventory.csv in the output directory option)')
   parser.add_argument('--decklistoutputfile', default='', help='Full path to the desired decklist output file. Requires --inventoryoutputfile if used. (default=magiccollection.dec in the output directory option)')
   parser.add_argument('--outputdir', default='', help='Directory in which to place the generated inventory & decklist files. (default=~/Dropbox, ~/Ubuntu One, or the current working directory)')
   parser.add_argument("--singlecollectiononly", help="Don't recursively look for collections to convert", action="store_true")
+  parser.add_argument("-f", dest='force', help="Don't warn prior to overwriting the export directory", action="store_true")
   args = parser.parse_args()
   
   import os
@@ -21,17 +22,25 @@ def main():
     decklistOutputFileStr = args.outputdir + '/magiccollection.dec'
   else:
     if os.path.exists(home + '/Dropbox'):
-      outputdirectoryprefix = home + '/Dropbox/DeckboxExports'
+      outputdirectoryprefix = home + '/Dropbox/Magic Assistant Exports'
     elif os.path.exists(home + '/Ubuntu One'):
-      outputdirectoryprefix = home + '/Ubuntu One/DeckboxExports'
+      outputdirectoryprefix = home + '/Ubuntu One/Magic Assistant Exports'
     else:
       outputdirectoryprefix = os.getcwd()
       
+    # Prompt prior to directory removal
+    if not args.force:
+      print('\nWarning: \"' + outputdirectoryprefix + '\" will be completely overwritten!\n')
+      #warningResultBool = query_yes_no()
+      if not query_yes_no("Proceed?"):
+        from sys import exit
+        exit()
+      else:
+        print('Proceeding; this prompt can be supressing in the future with the -f flag')
     if not os.path.isdir(outputdirectoryprefix):
       os.makedirs(outputdirectoryprefix)
     elif os.path.isdir(outputdirectoryprefix):
-	  os.removedirs(outputdirectoryprefix)
-	  os.makedirs(outputdirectoryprefix)
+      emptyfolder(outputdirectoryprefix)
     inventoryOutputFileStr = outputdirectoryprefix + '/magicdeckboxinventory.csv'
     decklistOutputFileStr = outputdirectoryprefix + '/magiccollection.dec'
     
@@ -229,6 +238,48 @@ def xml2csv(collection):
 
 
   return tempfileObj
+
+def query_yes_no(question, default="yes"):
+  # http://stackoverflow.com/questions/3041986/python-command-line-yes-no-input
+  """Ask a yes/no question via raw_input() and return their answer.
+
+  "question" is a string that is presented to the user.
+  "default" is the presumed answer if the user just hits <Enter>.
+  It must be "yes" (the default), "no" or None (meaning
+  an answer is required of the user).
+
+  The "answer" return value is one of "yes" or "no".
+  """
+  import sys
+  valid = {"yes":True, "y":True, "ye":True, "no":False, "n":False}
+  if default == None:
+    prompt = " [y/n] "
+  elif default == "yes":
+    prompt = " [Y/n] "
+  elif default == "no":
+    prompt = " [y/N] "
+  else:
+    raise ValueError("invalid default answer: '%s'" % default)
+
+  while True:
+    sys.stdout.write(question + prompt)
+    choice = raw_input().lower()
+    if default is not None and choice == '':
+      return valid[default]
+    elif choice in valid:
+      return valid[choice]
+    else:
+      sys.stdout.write("Please respond with 'yes' or 'no' (or 'y' or 'n').\n")
+
+def emptyfolder(folder):
+  import os 
+  for the_file in os.listdir(folder):
+    file_path = os.path.join(folder, the_file)
+    try:
+      if os.path.isfile(file_path):
+        os.remove(file_path)
+    except Exception, e:
+      print e
 
 if __name__ == "__main__":
   main()
