@@ -162,10 +162,13 @@ def createdeckboxinv(stagedcsv,inventoryfile):
         if ("(" in r[1]):
           cardname = r[1].replace("Æ","Ae").split(" (")[0]
         else:
-          cardname = r[1].replace("Æ","Ae")
+          if 'Chaotic Æther' not in r[1]:
+            cardname = r[1].replace("Æ","Ae")
+          else:
+            cardname = r[1]
         # Write the line to the file
         if "loan to me" not in r[5]:
-          wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012")] + [condition] + ["English"])
+          wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012").replace("Heroes vs. Monsters","Heroes vs Monsters")] + [condition] + ["English"])
         else:
           rdr.next()
 
