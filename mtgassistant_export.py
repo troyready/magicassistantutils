@@ -67,14 +67,20 @@ def main():
       collectionFileStr = args.collection
       createfiles(collectionFileStr, inventoryOutputFileStr,decklistOutputFileStr)
   else:
-    if os.path.exists(home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/'):
-      collectionFolderStr = home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/'
-    elif os.path.exists(home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/'):
-      collectionFolderStr = home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/'
+    if not args.inputdir == '':
+      if args.inputdir.endswith('/'):
+        collectionFolderStr = args.inputdir
+      else:
+        collectionFolderStr = args.inputdir + '/'
     else:
-      print('Please specify a valid folder.')
-      from sys import exit
-      exit()
+      if os.path.exists(home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/'):
+        collectionFolderStr = home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/'
+      elif os.path.exists(home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/'):
+        collectionFolderStr = home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/'
+      else:
+        print('Please specify a valid folder.')
+        from sys import exit
+        exit()
     
     import fnmatch
     
