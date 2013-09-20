@@ -17,9 +17,12 @@ def main():
   home = os.path.expanduser("~")
 
   if not args.outputdir == '':
-    outputdirectoryprefix = args.outputdir
-    inventoryOutputFileStr = args.outputdir + '/magicdeckboxinventory.csv'
-    decklistOutputFileStr = args.outputdir + '/magiccollection.dec'
+    if args.outputdir.endswith('/'):
+      outputdirectoryprefix = args.outputdir
+    else:
+      outputdirectoryprefix = args.outputdir + '/'
+    inventoryOutputFileStr = args.outputdir + 'magicdeckboxinventory.csv'
+    decklistOutputFileStr = args.outputdir + 'magiccollection.dec'
   else:
     if os.path.exists(home + '/Dropbox'):
       outputdirectoryprefix = home + '/Dropbox/Magic Assistant Exports'
