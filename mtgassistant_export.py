@@ -200,9 +200,9 @@ def createdeckboxinv(stagedcsv,inventoryfile):
         else:
           cardname = r[1].replace("Æ","Ae")
         # Set up the edition
-        cardedition = r[2].replace("\"","").replace("vs.", "vs").replace("2012 Edition","2012").replace('Time Spiral \\Timeshifted\\','Time Spiral \"Timeshifted\"\"').replace('\"\"','\"')
+        cardedition = r[2].replace("\"","").replace("Heroes vs. Monsters", "Heroes vs Monsters").replace("2012 Edition","2012").replace('Time Spiral \\Timeshifted\\','Time Spiral \"Timeshifted\"\"').replace('\"\"','\"')
         # Write the line to the file
-        if "loan to me" not in r[5]:
+        if "loan to me" not in r[5] and r[1] != '0':
           wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [cardedition] + [condition] + ["English"])
         else:
           rdr.next()
