@@ -186,7 +186,9 @@ def createdeckboxinv(stagedcsv,inventoryfile):
             tradecount = 0
           elif ("Swamp" in r[1]):
             tradecount = 0
-          elif (int(r[4].replace("\"","").replace(" ","")) - 4) >= 0:
+          elif ("Rare" in inventoryfile):
+            tradecount = int(r[4].replace("\"","").replace(" ",""))
+          elif(int(r[4].replace("\"","").replace(" ","")) - 4) >= 0:
             tradecount = int(r[4].replace("\"","").replace(" ","")) - 4
           else:
             tradecount = 0
