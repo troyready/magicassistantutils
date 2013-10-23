@@ -4,7 +4,7 @@
 def main():
   import argparse
   parser = argparse.ArgumentParser(description='Takes Magic Assistant collections & turn them into Deckbox.org CSVs & Apprentice-format .DECs.')
-  parser.add_argument('--inputfile', dest='collection', default='', help='Set a specific collection to be converted. (default=~/Dropbox/MagicAssistantWorkspace/magiccards/Collections/main.xml')
+  parser.add_argument('--inputfile', dest='collection', default='', help='Set a specific collection to be converted. (default=~/Dropbox/MagicAssistantWorkspace/magiccards/Collections/main.xml)')
   parser.add_argument('--inputdir', default='', help='Set a directory to search for files which comprise your collection. (default=~/Dropbox/MagicAssistantWorkspace/)')
   parser.add_argument('--inventoryoutputfile', default='', help='Full path to the desired inventory output file. Requires --decklistoutputfile if used. (default=magicdeckboxinventory.csv in the output directory option)')
   parser.add_argument('--decklistoutputfile', default='', help='Full path to the desired decklist output file. Requires --inventoryoutputfile if used. (default=magiccollection.dec in the output directory option)')
@@ -17,17 +17,14 @@ def main():
   home = os.path.expanduser("~")
 
   if not args.outputdir == '':
-    if args.outputdir.endswith('/'):
-      outputdirectoryprefix = args.outputdir
-    else:
-      outputdirectoryprefix = args.outputdir + '/'
-    inventoryOutputFileStr = args.outputdir + 'magicdeckboxinventory.csv'
-    decklistOutputFileStr = args.outputdir + 'magiccollection.dec'
+    outputdirectoryprefix = os.path.join(args.outputdir, '')
+    inventoryOutputFileStr = outputdirectoryprefix + 'magicdeckboxinventory.csv'
+    decklistOutputFileStr = outputdirectoryprefix + 'magiccollection.dec'
   else:
-    if os.path.exists(home + '/Dropbox'):
-      outputdirectoryprefix = home + '/Dropbox/Magic Assistant Exports'
-    elif os.path.exists(home + '/Ubuntu One'):
-      outputdirectoryprefix = home + '/Ubuntu One/Magic Assistant Exports'
+    if os.path.exists(os.path.join(home, 'Dropbox')):
+      outputdirectoryprefix = os.path.join(home, 'Dropbox', 'Magic Assistant Exports')
+    elif os.path.exists(os.path.join(home, 'Ubuntu One')):
+      outputdirectoryprefix = os.path.join(home, 'Ubuntu One', 'Magic Assistant Exports')
     else:
       outputdirectoryprefix = os.getcwd()
       
@@ -39,13 +36,13 @@ def main():
         from sys import exit
         exit()
       else:
-        print('Proceeding; this prompt can be supressing in the future with the -f flag')
+        print('Proceeding; this prompt can be suppressed in the future with the -f flag')
     if not os.path.isdir(outputdirectoryprefix):
       os.makedirs(outputdirectoryprefix)
     elif os.path.isdir(outputdirectoryprefix):
       emptyfolder(outputdirectoryprefix)
-    inventoryOutputFileStr = outputdirectoryprefix + '/magicdeckboxinventory.csv'
-    decklistOutputFileStr = outputdirectoryprefix + '/magiccollection.dec'
+    inventoryOutputFileStr = os.path.join(outputdirectoryprefix, 'magicdeckboxinventory.csv')
+    decklistOutputFileStr = os.path.join(outputdirectoryprefix, 'magiccollection.dec')
     
   if args.singlecollectiononly:
     if args.inventoryoutputfile != '' or args.inventoryoutputfile != '':
@@ -58,10 +55,10 @@ def main():
         inventoryOutputFileStr = args.inventoryoutputfile
         decklistOutputFileStr = args.decklistoutputfile
     if args.collection == '':
-      if os.path.isfile(home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/main.xml'):
-        collectionFileStr = home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/main.xml'
-      elif os.path.isfile(home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/main.xml'):
-        collectionFileStr = home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/main.xml'
+      if os.path.isfile(os.path.join(home, 'Dropbox', 'MagicAssistantWorkspace', 'magiccards', 'Collections', 'main.xml')):
+        collectionFileStr = os.path.join(home, 'Dropbox', 'MagicAssistantWorkspace', 'magiccards', 'Collections', 'main.xml')
+      elif os.path.isfile(os.path.join(home, 'Ubuntu One', 'MagicAssistantWorkspace', 'magiccards', 'Collections', 'main.xml')):
+        collectionFileStr = os.path.join(home, 'Ubuntu One', 'MagicAssistantWorkspace', 'magiccards', 'Collections', 'main.xml')
       else:
         print('No suitable collection found!')
         from sys import exit
@@ -71,15 +68,12 @@ def main():
       createfiles(collectionFileStr, inventoryOutputFileStr,decklistOutputFileStr)
   else:
     if not args.inputdir == '':
-      if args.inputdir.endswith('/'):
-        collectionFolderStr = args.inputdir
-      else:
-        collectionFolderStr = args.inputdir + '/'
-	else:
-      if os.path.exists(home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/'):
-        collectionFolderStr = home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/'
-      elif os.path.exists(home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/'):
-        collectionFolderStr = home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/'
+      os.path.join(args.inputdir, '') # will add trailing slash if necessary
+    else:
+      if os.path.exists(os.path.join(home, 'Dropbox', 'MagicAssistantWorkspace', 'magiccards', 'Collections', '')):
+        collectionFolderStr = os.path.join(home, 'Dropbox', 'MagicAssistantWorkspace', 'magiccards', 'Collections', '')
+      elif os.path.exists(os.path.join(home, 'Ubuntu One', 'MagicAssistantWorkspace', 'magiccards', 'Collections', '')):
+        collectionFolderStr = os.path.join(home, 'Ubuntu One', 'MagicAssistantWorkspace', 'magiccards', 'Collections', '')
       else:
         print('Please specify a valid folder.')
         from sys import exit
@@ -93,8 +87,8 @@ def main():
         listoffiles.append(os.path.join(root, filename))
     for collectionfile in listoffiles:
       cleanfilename = os.path.splitext(os.path.basename(collectionfile))[0]
-      inventoryOutputDynamicStr = outputdirectoryprefix + '/' + cleanfilename + ".csv"
-      decklistOutputDynamicStr = outputdirectoryprefix + '/' + cleanfilename + ".dec"
+      inventoryOutputDynamicStr = os.path.join(outputdirectoryprefix, cleanfilename) + ".csv"
+      decklistOutputDynamicStr = os.path.join(outputdirectoryprefix, cleanfilename) + ".dec"
       createfiles(collectionfile,inventoryOutputDynamicStr,decklistOutputDynamicStr)
     mergefilesexport(outputdirectoryprefix)
       
