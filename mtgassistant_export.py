@@ -75,7 +75,7 @@ def main():
         collectionFolderStr = args.inputdir
       else:
         collectionFolderStr = args.inputdir + '/'
-    else:
+	else:
       if os.path.exists(home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/'):
         collectionFolderStr = home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/'
       elif os.path.exists(home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/'):
@@ -96,6 +96,7 @@ def main():
       inventoryOutputDynamicStr = outputdirectoryprefix + '/' + cleanfilename + ".csv"
       decklistOutputDynamicStr = outputdirectoryprefix + '/' + cleanfilename + ".dec"
       createfiles(collectionfile,inventoryOutputDynamicStr,decklistOutputDynamicStr)
+    mergefilesexport(outputdirectoryprefix)
       
 def createfiles(collectionFileStr,inventoryOutputFileStr,decklistOutputFileStr):
   # Get the automatically converted CSV first (the staging file)
@@ -116,6 +117,27 @@ def createdeckboxheader(inventoryfile):
   f.write('Count,Tradelist Count,Name,Foil,Textless,Promo,Signed,Edition,Condition,Language' + os.linesep )
   f.close()
 
+def mergefilesexport(outputdirectory):
+  import os
+  import fnmatch
+  import csv
+  
+  for root, dirnames, filenames in os.walk(outputdirectory):
+    files = []
+    for f in fnmatch.filter(filenames, '*.csv'):
+      files.append(os.path.join(root, f))
+    outfile = os.path.join(outputdirectory, 'Summary.csv')
+
+  with open(outfile, 'w') as f_out:
+    dict_writer = None
+    for f in files:
+      with open(f, 'r') as f_in:
+        dict_reader = csv.DictReader(f_in)
+        if not dict_writer:
+          dict_writer = csv.DictWriter(f_out, lineterminator='\n', fieldnames=dict_reader.fieldnames)
+          dict_writer.writeheader()
+        for row in dict_reader:
+          dict_writer.writerow(row)
 
 def createdeckboxinv(stagedcsv,inventoryfile):
   import csv
@@ -154,12 +176,23 @@ def createdeckboxinv(stagedcsv,inventoryfile):
           foilstatus = ""
           promostatus = ""
           condition = "Near Mint"
-        # Set tradecount based on the number available
+            
+        # Set tradecount based on the number available   
         # Set all non promo foils to trade status
         if ("foil" in foilstatus) and ("promo" not in promostatus):
           tradecount = int(r[4].replace("\"","").replace(" ",""))
         else:
-          if (int(r[4].replace("\"","").replace(" ","")) - 4) >= 0:
+          if ("Forest" in r[1]):
+            tradecount = 0
+          elif ("Island" in r[1]):
+            tradecount = 0
+          elif ("Mountain" in r[1]):
+            tradecount = 0
+          elif ("Plains" in r[1]):
+            tradecount = 0
+          elif ("Swamp" in r[1]):
+            tradecount = 0
+          elif (int(r[4].replace("\"","").replace(" ","")) - 4) >= 0:
             tradecount = int(r[4].replace("\"","").replace(" ","")) - 4
           else:
             tradecount = 0
@@ -171,13 +204,12 @@ def createdeckboxinv(stagedcsv,inventoryfile):
         if ("(" in r[1]):
           cardname = r[1].replace("Æ","Ae").split(" (")[0]
         else:
-          if 'Chaotic Æther' not in r[1]:
-            cardname = r[1].replace("Æ","Ae")
-          else:
-            cardname = r[1]
+          cardname = r[1].replace("Æ","Ae")
+        # Set up the edition
+        cardedition = r[2].replace("\"","").replace("vs.", "vs").replace("2012 Edition","2012").replace('Time Spiral \\Timeshifted\\','Time Spiral \"Timeshifted\"\"').replace('\"\"','\"')
         # Write the line to the file
         if "loan to me" not in r[5]:
-          wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012").replace("Heroes vs. Monsters","Heroes vs Monsters")] + [condition] + ["English"])
+          wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [cardedition] + [condition] + ["English"])
         else:
           rdr.next()
 
