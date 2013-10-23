@@ -4,7 +4,7 @@
 def main():
   import argparse
   parser = argparse.ArgumentParser(description='Takes Magic Assistant collections & turn them into Deckbox.org CSVs & Apprentice-format .DECs.')
-  parser.add_argument('--inputfile', dest='collection', default='', help='Set a specific collection to be converted. (default=~/Dropbox/MagicAssistantWorkspace/magiccards/Collections/main.xml')
+  parser.add_argument('--inputfile', dest='collection', default='', help='Set a specific collection to be converted. (default=~/Dropbox/MagicAssistantWorkspace/magiccards/Collections/main.xml)')
   parser.add_argument('--inputdir', default='', help='Set a directory to search for files which comprise your collection. (default=~/Dropbox/MagicAssistantWorkspace/)')
   parser.add_argument('--inventoryoutputfile', default='', help='Full path to the desired inventory output file. Requires --decklistoutputfile if used. (default=magicdeckboxinventory.csv in the output directory option)')
   parser.add_argument('--decklistoutputfile', default='', help='Full path to the desired decklist output file. Requires --inventoryoutputfile if used. (default=magiccollection.dec in the output directory option)')
@@ -17,17 +17,14 @@ def main():
   home = os.path.expanduser("~")
 
   if not args.outputdir == '':
-    if args.outputdir.endswith('/'):
-      outputdirectoryprefix = args.outputdir
-    else:
-      outputdirectoryprefix = args.outputdir + '/'
-    inventoryOutputFileStr = args.outputdir + 'magicdeckboxinventory.csv'
-    decklistOutputFileStr = args.outputdir + 'magiccollection.dec'
+    outputdirectoryprefix = os.path.join(args.outputdir, '')
+    inventoryOutputFileStr = outputdirectoryprefix + 'magicdeckboxinventory.csv'
+    decklistOutputFileStr = outputdirectoryprefix + 'magiccollection.dec'
   else:
-    if os.path.exists(home + '/Dropbox'):
-      outputdirectoryprefix = home + '/Dropbox/Magic Assistant Exports'
-    elif os.path.exists(home + '/Ubuntu One'):
-      outputdirectoryprefix = home + '/Ubuntu One/Magic Assistant Exports'
+    if os.path.exists(os.path.join(home, 'Dropbox')):
+      outputdirectoryprefix = os.path.join(home, 'Dropbox', 'Magic Assistant Exports')
+    elif os.path.exists(os.path.join(home, 'Ubuntu One')):
+      outputdirectoryprefix = os.path.join(home, 'Ubuntu One', 'Magic Assistant Exports')
     else:
       outputdirectoryprefix = os.getcwd()
       
@@ -39,13 +36,13 @@ def main():
         from sys import exit
         exit()
       else:
-        print('Proceeding; this prompt can be supressing in the future with the -f flag')
+        print('Proceeding; this prompt can be suppressed in the future with the -f flag')
     if not os.path.isdir(outputdirectoryprefix):
       os.makedirs(outputdirectoryprefix)
     elif os.path.isdir(outputdirectoryprefix):
       emptyfolder(outputdirectoryprefix)
-    inventoryOutputFileStr = outputdirectoryprefix + '/magicdeckboxinventory.csv'
-    decklistOutputFileStr = outputdirectoryprefix + '/magiccollection.dec'
+    inventoryOutputFileStr = os.path.join(outputdirectoryprefix, 'magicdeckboxinventory.csv')
+    decklistOutputFileStr = os.path.join(outputdirectoryprefix, 'magiccollection.dec')
     
   if args.singlecollectiononly:
     if args.inventoryoutputfile != '' or args.inventoryoutputfile != '':
@@ -58,10 +55,10 @@ def main():
         inventoryOutputFileStr = args.inventoryoutputfile
         decklistOutputFileStr = args.decklistoutputfile
     if args.collection == '':
-      if os.path.isfile(home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/main.xml'):
-        collectionFileStr = home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/main.xml'
-      elif os.path.isfile(home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/main.xml'):
-        collectionFileStr = home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/main.xml'
+      if os.path.isfile(os.path.join(home, 'Dropbox', 'MagicAssistantWorkspace', 'magiccards', 'Collections', 'main.xml')):
+        collectionFileStr = os.path.join(home, 'Dropbox', 'MagicAssistantWorkspace', 'magiccards', 'Collections', 'main.xml')
+      elif os.path.isfile(os.path.join(home, 'Ubuntu One', 'MagicAssistantWorkspace', 'magiccards', 'Collections', 'main.xml')):
+        collectionFileStr = os.path.join(home, 'Ubuntu One', 'MagicAssistantWorkspace', 'magiccards', 'Collections', 'main.xml')
       else:
         print('No suitable collection found!')
         from sys import exit
@@ -71,15 +68,12 @@ def main():
       createfiles(collectionFileStr, inventoryOutputFileStr,decklistOutputFileStr)
   else:
     if not args.inputdir == '':
-      if args.inputdir.endswith('/'):
-        collectionFolderStr = args.inputdir
-      else:
-        collectionFolderStr = args.inputdir + '/'
+      os.path.join(args.inputdir, '') # will add trailing slash if necessary
     else:
-      if os.path.exists(home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/'):
-        collectionFolderStr = home + '/Dropbox/MagicAssistantWorkspace/magiccards/Collections/'
-      elif os.path.exists(home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/'):
-        collectionFolderStr = home + '/Ubuntu One/MagicAssistantWorkspace/magiccards/Collections/'
+      if os.path.exists(os.path.join(home, 'Dropbox', 'MagicAssistantWorkspace', 'magiccards', 'Collections', '')):
+        collectionFolderStr = os.path.join(home, 'Dropbox', 'MagicAssistantWorkspace', 'magiccards', 'Collections', '')
+      elif os.path.exists(os.path.join(home, 'Ubuntu One', 'MagicAssistantWorkspace', 'magiccards', 'Collections', '')):
+        collectionFolderStr = os.path.join(home, 'Ubuntu One', 'MagicAssistantWorkspace', 'magiccards', 'Collections', '')
       else:
         print('Please specify a valid folder.')
         from sys import exit
@@ -93,9 +87,10 @@ def main():
         listoffiles.append(os.path.join(root, filename))
     for collectionfile in listoffiles:
       cleanfilename = os.path.splitext(os.path.basename(collectionfile))[0]
-      inventoryOutputDynamicStr = outputdirectoryprefix + '/' + cleanfilename + ".csv"
-      decklistOutputDynamicStr = outputdirectoryprefix + '/' + cleanfilename + ".dec"
+      inventoryOutputDynamicStr = os.path.join(outputdirectoryprefix, cleanfilename) + ".csv"
+      decklistOutputDynamicStr = os.path.join(outputdirectoryprefix, cleanfilename) + ".dec"
       createfiles(collectionfile,inventoryOutputDynamicStr,decklistOutputDynamicStr)
+    mergefilesexport(outputdirectoryprefix)
       
 def createfiles(collectionFileStr,inventoryOutputFileStr,decklistOutputFileStr):
   # Get the automatically converted CSV first (the staging file)
@@ -116,6 +111,27 @@ def createdeckboxheader(inventoryfile):
   f.write('Count,Tradelist Count,Name,Foil,Textless,Promo,Signed,Edition,Condition,Language' + os.linesep )
   f.close()
 
+def mergefilesexport(outputdirectory):
+  import os
+  import fnmatch
+  import csv
+  
+  for root, dirnames, filenames in os.walk(outputdirectory):
+    files = []
+    for f in fnmatch.filter(filenames, '*.csv'):
+      files.append(os.path.join(root, f))
+    outfile = os.path.join(outputdirectory, 'Summary.csv')
+
+  with open(outfile, 'w') as f_out:
+    dict_writer = None
+    for f in files:
+      with open(f, 'r') as f_in:
+        dict_reader = csv.DictReader(f_in)
+        if not dict_writer:
+          dict_writer = csv.DictWriter(f_out, lineterminator='\n', fieldnames=dict_reader.fieldnames)
+          dict_writer.writeheader()
+        for row in dict_reader:
+          dict_writer.writerow(row)
 
 def createdeckboxinv(stagedcsv,inventoryfile):
   import csv
@@ -154,12 +170,25 @@ def createdeckboxinv(stagedcsv,inventoryfile):
           foilstatus = ""
           promostatus = ""
           condition = "Near Mint"
-        # Set tradecount based on the number available
+            
+        # Set tradecount based on the number available   
         # Set all non promo foils to trade status
         if ("foil" in foilstatus) and ("promo" not in promostatus):
           tradecount = int(r[4].replace("\"","").replace(" ",""))
         else:
-          if (int(r[4].replace("\"","").replace(" ","")) - 4) >= 0:
+          if ("Forest" in r[1]):
+            tradecount = 0
+          elif ("Island" in r[1]):
+            tradecount = 0
+          elif ("Mountain" in r[1]):
+            tradecount = 0
+          elif ("Plains" in r[1]):
+            tradecount = 0
+          elif ("Swamp" in r[1]):
+            tradecount = 0
+          elif ("Rare" in inventoryfile):
+            tradecount = int(r[4].replace("\"","").replace(" ",""))
+          elif(int(r[4].replace("\"","").replace(" ","")) - 4) >= 0:
             tradecount = int(r[4].replace("\"","").replace(" ","")) - 4
           else:
             tradecount = 0
@@ -171,13 +200,12 @@ def createdeckboxinv(stagedcsv,inventoryfile):
         if ("(" in r[1]):
           cardname = r[1].replace("Æ","Ae").split(" (")[0]
         else:
-          if 'Chaotic Æther' not in r[1]:
-            cardname = r[1].replace("Æ","Ae")
-          else:
-            cardname = r[1]
+          cardname = r[1].replace("Æ","Ae")
+        # Set up the edition
+        cardedition = r[2].replace("\"","").replace("Heroes vs. Monsters", "Heroes vs Monsters").replace("2012 Edition","2012").replace('Time Spiral \\Timeshifted\\','Time Spiral \"Timeshifted\"\"').replace('\"\"','\"')
         # Write the line to the file
-        if "loan to me" not in r[5]:
-          wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [r[2].replace("\"","").replace("2012 Edition","2012").replace("Heroes vs. Monsters","Heroes vs Monsters")] + [condition] + ["English"])
+        if "loan to me" not in r[5] and r[4] != '0':
+          wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [cardedition] + [condition] + ["English"])
         else:
           rdr.next()
 
