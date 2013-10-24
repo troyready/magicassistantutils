@@ -68,7 +68,7 @@ def main():
       createfiles(collectionFileStr, inventoryOutputFileStr,decklistOutputFileStr)
   else:
     if not args.inputdir == '':
-      os.path.join(args.inputdir, '') # will add trailing slash if necessary
+      collectionFolderStr = os.path.join(args.inputdir, '') # will add trailing slash if necessary
     else:
       if os.path.exists(os.path.join(home, 'Dropbox', 'MagicAssistantWorkspace', 'magiccards', 'Collections', '')):
         collectionFolderStr = os.path.join(home, 'Dropbox', 'MagicAssistantWorkspace', 'magiccards', 'Collections', '')
