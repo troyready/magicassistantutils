@@ -10,6 +10,7 @@ def main():
   parser.add_argument('--decklistoutputfile', default='', help='Full path to the desired decklist output file. Requires --inventoryoutputfile if used. (default=magiccollection.dec in the output directory option)')
   parser.add_argument('--outputdir', default='', help='Directory in which to place the generated inventory & decklist files. (default=~/Dropbox, ~/Ubuntu One, or the current working directory)')
   parser.add_argument("--singlecollectiononly", help="Don't recursively look for collections to convert", action="store_true")
+  parser.add_argument("--nosummaryfile", help="Don't generate a file (Summary.csv) with all cards exported from all collections", action="store_true")
   parser.add_argument("-f", dest='force', help="Don't warn prior to overwriting the export directory", action="store_true")
   args = parser.parse_args()
   
@@ -90,7 +91,8 @@ def main():
       inventoryOutputDynamicStr = os.path.join(outputdirectoryprefix, cleanfilename) + ".csv"
       decklistOutputDynamicStr = os.path.join(outputdirectoryprefix, cleanfilename) + ".dec"
       createfiles(collectionfile,inventoryOutputDynamicStr,decklistOutputDynamicStr)
-    mergefilesexport(outputdirectoryprefix)
+    if not args.nosummaryfile:
+      mergefilesexport(outputdirectoryprefix)
       
 def createfiles(collectionFileStr,inventoryOutputFileStr,decklistOutputFileStr):
   # Get the automatically converted CSV first (the staging file)
