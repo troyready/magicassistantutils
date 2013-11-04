@@ -21,6 +21,9 @@ def main():
     outputdirectoryprefix = os.path.join(args.outputdir, '')
     inventoryOutputFileStr = outputdirectoryprefix + 'magicdeckboxinventory.csv'
     decklistOutputFileStr = outputdirectoryprefix + 'magiccollection.dec'
+    # Prompt prior to directory removal
+    dirPurgePrompt(outputdirectoryprefix,args.force)
+    emptyfolder(outputdirectoryprefix)
   else:
     if os.path.exists(os.path.join(home, 'Dropbox')):
       outputdirectoryprefix = os.path.join(home, 'Dropbox', 'Magic Assistant Exports')
@@ -30,14 +33,7 @@ def main():
       outputdirectoryprefix = os.getcwd()
       
     # Prompt prior to directory removal
-    if not args.force:
-      print('\nWarning: \"' + outputdirectoryprefix + '\" will be completely overwritten!\n')
-      #warningResultBool = query_yes_no()
-      if not query_yes_no("Proceed?"):
-        from sys import exit
-        exit()
-      else:
-        print('Proceeding; this prompt can be suppressed in the future with the -f flag')
+    dirPurgePrompt(outputdirectoryprefix,args.force)
     if not os.path.isdir(outputdirectoryprefix):
       os.makedirs(outputdirectoryprefix)
     elif os.path.isdir(outputdirectoryprefix):
@@ -93,6 +89,16 @@ def main():
       createfiles(collectionfile,inventoryOutputDynamicStr,decklistOutputDynamicStr)
     if not args.nosummaryfile:
       mergefilesexport(outputdirectoryprefix)
+
+def dirPurgePrompt(directory,ignorePrompt):
+    # Prompt prior to directory removal
+    if not ignorePrompt:
+      print('\nWarning: \"' + directory + '\" will be completely overwritten!\n')
+      if not query_yes_no("Proceed?"):
+        from sys import exit
+        exit()
+      else:
+        print('Proceeding; this prompt can be suppressed in the future with the -f flag')
       
 def createfiles(collectionFileStr,inventoryOutputFileStr,decklistOutputFileStr):
   # Get the automatically converted CSV first (the staging file)
