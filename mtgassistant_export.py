@@ -213,10 +213,15 @@ def createdeckboxinv(stagedcsv,inventoryfile):
             cardname = r[1].replace("Æ","Ae")
           else:
             cardname = r[1]
+        # Work around bad quote handling
+        if cardname == "Kongming, \\Sleeping Dragon\\\"\"":
+          cardname = "Kongming, \"Sleeping Dragon\""
         # Set up the edition
         cardedition = r[2].replace("\"","").replace("Commander 2013 Edition", "Commander 2013").replace("Heroes vs. Monsters", "Heroes vs Monsters").replace("2012 Edition","2012").replace('Time Spiral \\Timeshifted\\','Time Spiral \"Timeshifted\"\"').replace('\"\"','\"')
         # Write the line to the file
-        if "loan to me" not in r[5] and r[4] != '0':
+        # Certain cards cannot be imported now due a deckbox bug; have to skip them and import them manually
+        # http://deckbox.org/forum/viewtopic.php?pid=72629
+        if "loan to me" not in r[5] and r[4] != '0' and cardname != "Lim-Dûl's Vault" and cardname != "Chaotic Æther":
           wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [cardedition] + [condition] + ["English"])
         else:
           rdr.next()
@@ -236,7 +241,6 @@ def createdecklist(stagedcsv,decklistfile):
           result.write(' ' + r[4] + ' ' + r[1] + os.linesep)
         else:
           rdr.next()
-
 
 def xml2csv(collection):
   # This function (c) Kailash Nadh, October 2011
