@@ -222,7 +222,7 @@ def createdeckboxinv(stagedcsv,inventoryfile):
         # Write the line to the file
         # Certain cards cannot be imported now due a deckbox bug; have to skip them and import them manually
         # http://deckbox.org/forum/viewtopic.php?pid=72629
-        if "loan to me" not in r[5] and r[4] != '0' and cardname != "Lim-Dûl's Vault" and cardname != "Chaotic Æther" and cardedition != "Magic Player Rewards":
+        if "loan to me" not in r[5] and r[4] != '0' and cardname != "Lim-Dûl's Vault" and cardname != "Chaotic Æther":
           wtr.writerow([r[4].replace("\"","").replace(" ","")] + [tradecount] + [cardname] + [foilstatus] + [r[3].replace("\"","").replace(" ","")] + [promostatus] + [r[3].replace("\"","").replace(" ","")] + [cardedition] + [condition] + ["English"])
         else:
           rdr.next()
