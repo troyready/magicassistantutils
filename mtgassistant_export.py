@@ -184,7 +184,8 @@ def createdeckboxinv(stagedcsv,inventoryfile):
         tradecount = 0
         # Override the amount listed available for trade
         # If in a duel deck, none are available
-        if ("Duel Deck" in r[2]):
+        # If in C13, none are available
+        if (("Duel Deck" in r[2]) or "Commander 2013" in r[2]):
           tradecount = 0
         # Set up the name
         if ("(" in r[1]):
@@ -199,7 +200,7 @@ def createdeckboxinv(stagedcsv,inventoryfile):
         if cardname == "Kongming, \\Sleeping Dragon\\\"\"":
           cardname = "Kongming, \"Sleeping Dragon\""
         # Set up the edition
-        cardedition = r[2].replace("\"","").replace("Commander 2013 Edition", "Commander 2013").replace("Heroes vs. Monsters", "Heroes vs Monsters").replace("2012 Edition","2012").replace('Time Spiral \\Timeshifted\\','Time Spiral \"Timeshifted\"\"').replace('\"\"','\"')
+        cardedition = r[2].replace("\"","").replace("Commander 2013 Edition", "Commander 2013").replace("2012 Edition","2012").replace('Time Spiral \\Timeshifted\\','Time Spiral \"Timeshifted\"\"').replace('\"\"','\"')
         # Write the line to the file
         # Certain cards cannot be imported now due a deckbox bug; have to skip them and import them manually
         # http://deckbox.org/forum/viewtopic.php?pid=72629
