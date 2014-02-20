@@ -180,26 +180,8 @@ def createdeckboxinv(stagedcsv,inventoryfile):
           condition = "Near Mint"
             
         # Set tradecount based on the number available   
-        # Set all non promo foils to trade status
-        if ("foil" in foilstatus) and ("promo" not in promostatus):
-          tradecount = int(r[4].replace("\"","").replace(" ",""))
-        else:
-          if ("Forest" in r[1]):
-            tradecount = 0
-          elif ("Island" in r[1]):
-            tradecount = 0
-          elif ("Mountain" in r[1]):
-            tradecount = 0
-          elif ("Plains" in r[1]):
-            tradecount = 0
-          elif ("Swamp" in r[1]):
-            tradecount = 0
-          elif ("Rare" in inventoryfile):
-            tradecount = int(r[4].replace("\"","").replace(" ",""))
-          elif(int(r[4].replace("\"","").replace(" ","")) - 4) >= 0:
-            tradecount = int(r[4].replace("\"","").replace(" ","")) - 4
-          else:
-            tradecount = 0
+        # TODO fix disabled trades -- add manual tradelisting
+        tradecount = 0
         # Override the amount listed available for trade
         # If in a duel deck, none are available
         if ("Duel Deck" in r[2]):
