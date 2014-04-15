@@ -143,6 +143,7 @@ end
 if __FILE__ == $0
   
   require 'optparse'
+  require 'pathname'
   
   # This hash will hold all of the options
   # parsed from the command-line by
@@ -179,7 +180,11 @@ if __FILE__ == $0
   
   if options[:outputdir] == nil
     print 'Enter output directory for files: '
-    options[:outputdir] = gets.chomp
+    options[:outputdir] = Pathname(gets.chomp).cleanpath.to_s
+  end
+  
+  unless Pathname(options[:outputdir]).directory?
+    puts "\"#{options[:outputdir]}\" is not a valid directory"
   end
   
   # Option set; start the processing
