@@ -1,3 +1,0 @@
-[submodule "xmlutils.py"]
-	path = xmlutils.py
-	url = git://github.com/troyready/xmlutils.py.git
