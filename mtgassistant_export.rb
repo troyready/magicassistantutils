@@ -40,16 +40,16 @@ def hasparm? (parm,cardobj)
 end
 
 def deckboxaccepts? (cardobj)
-  if cardobj['edition'].first == 'Magic Player Rewards'
-    return false
   # http://deckbox.org/forum/viewtopic.php?pid=72629
-  elsif cardobj['name'].first == 'Lim-Dûl\'s Vault'
+  if cardobj['name'].first == 'Lim-Dûl\'s Vault'
     return false
   elsif cardobj['name'].first == 'Chaotic Æther'
     return false
   elsif cardobj['special']
     if cardobj['special'].first.include?('loantome')
       return false
+    else
+      return true
     end
   else
     return true
