@@ -15,9 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-## Example card entry
-# mainxml['list'].first['mcp'].first
-# {"card"=>[{"id"=>["152727"], "name"=>["Disperse"], "edition"=>["Morningtide"]}], "id"=>["152727"], "name"=>["Disperse"], "cost"=>["{1}{U}"], "type"=>["Instant"], "oracleText"=>["Return target nonland permanent to its owner's hand."], "edition"=>["Morningtide"], "rarity"=>["Common"], "dbprice"=>["0.15"], "rating"=>["3.521"], "artist"=>["Steve Ellis"], "num"=>["31"], "text"=>["Return target nonland permanent to its owner's hand."], "properties"=>["{LEGALITY=Standard|Commander-}"], "count"=>["2"], "location"=>["Collections/main"], "ownership"=>["true"]}
+## Example card entries
+#mainxml['list'].first['mcp'].first
+# {"card"=>[{"id"=>["152727"], "name"=>["Disperse"], "edition"=>["Morningtide"]}], "count"=>["2"], "location"=>["Collections/main"], "ownership"=>["true"]}
+#
+#mainxml['list'].first['mcp'].first
+#{"card"=>[{"id"=>["280320"], "name"=>["Intrepid Hero"], "edition"=>["Magic 2013"]}], "count"=>["1"], "location"=>["Collections/main"], "ownership"=>["true"], "special"=>["foil"]}
 
 require 'rubygems'
 require 'bundler/setup'
@@ -41,9 +44,9 @@ end
 
 def deckboxaccepts? (cardobj)
   # http://deckbox.org/forum/viewtopic.php?pid=72629
-  if cardobj['name'].first == 'Lim-Dûl\'s Vault'
+  if cardobj['card'].first['name'].first == 'Lim-Dûl\'s Vault'
     return false
-  elsif cardobj['name'].first == 'Chaotic Æther'
+  elsif cardobj['card'].first['name'].first == 'Chaotic Æther'
     return false
   elsif cardobj['special']
     if cardobj['special'].first.include?('loantome')
@@ -59,7 +62,7 @@ end
 def gettradecount (cardobj)
   # TODO - Add support for manual tradecounts
   specialsets = ['Archenemy','Magic: The Gathering-Commander','Commander 2013 Edition','Planechase','Planechase 2012 Edition']
-  unless specialsets.include?(cardobj['edition'].first) or cardobj['edition'].first.include?('Duel Deck')
+  unless specialsets.include?(cardobj['card'].first['edition'].first) or cardobj['card'].first['edition'].first.include?('Duel Deck')
     if cardobj['count'].first.to_i > 4
       return (cardobj['count'].first.to_i - 4).to_s
     else
@@ -75,10 +78,10 @@ def mkdecklist (xml,outputdir)
   decklistcount = []
   xml['list'].first['mcp'].each do |card|
     unless card['special'] and card['special'].first.include?('loantome')
-      if decklistnames.include?(card['name'].first)
-        decklistcount[decklistnames.index(card['name'].first)] += card['count'].first.to_i
+      if decklistnames.include?(card['card'].first['name'].first)
+        decklistcount[decklistnames.index(card['card'].first['name'].first)] += card['count'].first.to_i
       else
-        decklistnames << card['name'].first
+        decklistnames << card['card'].first['name'].first
         decklistcount << card['count'].first.to_i
       end
     end
@@ -104,7 +107,7 @@ def mkdeckboxinv(cardxml,outputdir)
       if deckboxaccepts?(card)
         linetoadd = [card['count'].first]
         linetoadd << gettradecount(card)
-        cardname = card['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae')
+        cardname = card['card'].first['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae')
         linetoadd << cardname
         if hasparm?('foil',card)
           linetoadd << 'foil'
@@ -126,7 +129,7 @@ def mkdeckboxinv(cardxml,outputdir)
         else
           linetoadd << ''
         end
-        linetoadd << card['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013')
+        linetoadd << card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013')
         if hasparm?('played',card)
           linetoadd << 'Played'
         else
