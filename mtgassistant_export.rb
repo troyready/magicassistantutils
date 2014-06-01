@@ -99,6 +99,60 @@ def mkdecklist (xml,outputdir)
   end  
 end
 
+
+def mkcoll2 (xml,outputfile)
+  # Using a temporary array of card ideas as a way of quickly checking which
+  # cards have already been encountered
+  cardids = []
+  cards = []
+  xml['list'].first['mcp'].each do |card|
+    unless card['special'] and card['special'].first.include?('loantome')
+      # Custom sets in Magic Assistant start with a -
+      unless card['card'].first['id'].first.start_with?('-')
+        unless cardids.include?(card['card'].first['id'].first)
+          # This means that we haven't encountered this multiverse id before
+          # Now that we're adding it to the cards array, note here that
+          # we've encountered it
+          cardids << card['card'].first['id'].first
+          newcard = {}
+          newcard['id'] = card['card'].first['id'].first
+          unless card['special'] and card['special'].first.include?('foil')
+            newcard['regulars'] = card['count'].first.to_i
+            newcard['foils'] = 0
+          else
+            newcard['regulars'] = 0
+            newcard['foils'] = card['count'].first.to_i
+          end
+          cards << newcard
+        else
+          # We've already encountered this multiverseid at least once, so
+          # increment ownership numbers instead
+          unless card['special'] and card['special'].first.include?('foil')
+            cards[cardids.index(card['card'].first['id'].first)]['regulars'] += card['count'].first.to_i
+          else
+            cards[cardids.index(card['card'].first['id'].first)]['foils'] += card['count'].first.to_i
+          end
+        end
+      end
+    end
+  end
+  File.open(outputfile, 'w') do |f|
+    # Start with the boilerplate
+    f.puts "doc:\n"
+    f.puts "- version: 1\n"
+    f.puts "- items:\n"
+    cards.each do |card|
+      f.puts "  - - id: #{card['id']}\n"
+      if card['regulars'] > 0
+        f.puts "    - r: #{card['regulars'].to_s}\n"
+      end
+      if card['foils'] > 0
+        f.puts "    - f: #{card['foils'].to_s}\n"
+      end
+    end
+  end
+end  
+
 def mkdeckboxinv(cardxml,outputdir)
   require 'csv'
   CSV.open("#{outputdir}/main.csv", "wb") do |csv|
@@ -166,6 +220,11 @@ if __FILE__ == $0
       options[:outputdir] = f
     end
     
+    options[:deckedoutfile] = false
+    opts.on( '-d', '--deckedbuilder FILE', "Decked Builder output file" ) do |f|
+      options[:deckedoutfile] = f
+    end
+    
     # This displays the help screen, all programs are
     # assumed to have this option.
     opts.on( '-h', '--help', 'Display this screen' ) do
@@ -194,6 +253,10 @@ if __FILE__ == $0
   mainxml = parsexml(options[:inputfile])
   
   mkdecklist(mainxml,options[:outputdir])
+  
+  if options[:deckedoutfile]
+    mkcoll2(mainxml,options[:deckedoutfile])
+  end
   
   mkdeckboxinv(mainxml,options[:outputdir])
 end
