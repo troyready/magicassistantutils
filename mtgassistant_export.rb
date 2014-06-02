@@ -99,6 +99,131 @@ def mkdecklist (xml,outputdir)
   end  
 end
 
+def getmultiverseid (cardid)
+  # If you want to include non-Gatherer cards in your Decked Builder collection,
+  # you'll need to manually map the custom Magic Assistant id to a valid
+  # multiverse id.
+  #
+  # This translation process is, I believe, specific to each Magic Assistant
+  # installation. Modify here to match your own IDs
+  #
+  cardmapping = {}
+  # DotP Scavenging Ooze promo -> Magic 2014 version
+  cardmapping['-2147450810'] = '370629'
+  # "Ponder" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354851".
+  # "Rampant Growth" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354843".
+  # "Giant Growth" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354867".
+  # "Terminate" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354841".
+  # "Mana Leak" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354872".
+  # "Lightning Bolt" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354840".
+  # "Searing Blaze" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354827".
+  # "Terror" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354875".
+  # "Sign in Blood" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354838".
+  # "Fireball" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354874".
+  # "Doom Blade" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354829".
+  # "Faithless Looting" from "Media Inserts" has an invalid Multiverse ID "-2147450841".
+  # "Treasure Hunt" from "Media Inserts" has an invalid Multiverse ID "-2147450842".
+  # "Serra Avatar" from "Media Inserts" has an invalid Multiverse ID "-2147450832".
+  # "Dreg Mangler" from "Media Inserts" has an invalid Multiverse ID "-2147450825".
+  # "Treasury Thrull" from "Prerelease Events" has an invalid Multiverse ID "-2147418048".
+  # "Angel of Glory's Rise" from "Media Inserts" has an invalid Multiverse ID "-2147450821".
+  # "Sunblast Angel" from "Media Inserts" has an invalid Multiverse ID "-2147450833".
+  # "Terastodon" from "Media Inserts" has an invalid Multiverse ID "-2147450828".
+  # "Fathom Mage" from "Prerelease Events" has an invalid Multiverse ID "-2147418051".
+  # "Hypersonic Dragon" from "Prerelease Events" has an invalid Multiverse ID "-2147418056".
+  # "Megantic Sliver" from "Prerelease Events" has an invalid Multiverse ID "-2147418045".
+  # "Archon of the Triumvirate" from "Prerelease Events" has an invalid Multiverse ID "-2147418057".
+  # "Anthousa, Setessan Hero" from "Prerelease Events" has an invalid Multiverse ID "-2147418040".
+  # "Glissa, the Traitor" from "Prerelease Events" has an invalid Multiverse ID "-2147418064".
+  # "Grove of the Guardian" from "Prerelease Events" has an invalid Multiverse ID "-2147418053".
+  # "Consuming Aberration" from "Prerelease Events" has an invalid Multiverse ID "-2147418052".
+  # "Foundry Champion" from "Prerelease Events" has an invalid Multiverse ID "-2147418050".
+  # "Carnival Hellsteed" from "Prerelease Events" has an invalid Multiverse ID "-2147418055".
+  # "Silent Sentinel" from "Prerelease Events" has an invalid Multiverse ID "-2147418039".
+  # "Rubblehulk" from "Prerelease Events" has an invalid Multiverse ID "-2147418049".
+  # "Corpsejack Menace" from "Prerelease Events" has an invalid Multiverse ID "-2147418054".
+  # "Elvish Mystic" from "Friday Night Magic" has an invalid Multiverse ID "-2147385179".
+  # "Sylvan Caryatid" from "Media Inserts" has an invalid Multiverse ID "-2147450803".
+  # "Hive Stirrings" from "Magic Game Day Cards" has an invalid Multiverse ID "-2147352548".
+  # "Doomwake Giant" from "Prerelease Events" has an invalid Multiverse ID "-2147418032".
+  # "Bident of Thassa" from "Magic: The Gathering Launch Parties" has an invalid Multiverse ID "-2147319784".
+  # "Phalanx Leader" from "Magic Game Day Cards" has an invalid Multiverse ID "-2147352546".
+  # "Hamletback Goliath" from "Media Inserts" has an invalid Multiverse ID "-2147450809".
+  # "Karametra's Acolyte" from "Media Inserts" has an invalid Multiverse ID "-2147450802".
+  # "Kor Skyfisher" from "Media Inserts" has an invalid Multiverse ID "-2147450855".
+  # "Oblivion Ring" from "Friday Night Magic" has an invalid Multiverse ID "-2147385230".
+  # "Counterspell" from "Friday Night Magic" has an invalid Multiverse ID "-2147385278".
+  # "Capsize" from "Friday Night Magic" has an invalid Multiverse ID "-2147385309".
+  # "Giant Growth" from "Friday Night Magic" has an invalid Multiverse ID "-2147385336".
+  # "Krosan Tusker" from "Friday Night Magic" has an invalid Multiverse ID "-2147385302".
+  # "Wall of Roots" from "Friday Night Magic" has an invalid Multiverse ID "-2147385246".
+  # "Terminate" from "Friday Night Magic" has an invalid Multiverse ID "-2147385274".
+  # "Fireblast" from "Friday Night Magic" has an invalid Multiverse ID "-2147385326".
+  # "Evolving Wilds" from "Friday Night Magic" has an invalid Multiverse ID "-2147385195".
+  # "Warleader's Helix" from "Friday Night Magic" has an invalid Multiverse ID "-2147385180".
+  # "Wild Nacatl" from "Friday Night Magic" has an invalid Multiverse ID "-2147385217".
+  # "Forbidden Alchemy" from "Friday Night Magic" has an invalid Multiverse ID "-2147385198".
+  # "Searing Spear" from "Friday Night Magic" has an invalid Multiverse ID "-2147385192".
+  # "Mulldrifter" from "Friday Night Magic" has an invalid Multiverse ID "-2147385235".
+  # "Grisly Salvage" from "Friday Night Magic" has an invalid Multiverse ID "-2147385182".
+  # "Farseek" from "Friday Night Magic" has an invalid Multiverse ID "-2147385190".
+  # "Rancor" from "Friday Night Magic" has an invalid Multiverse ID "-2147385288".
+  # "Terror" from "Friday Night Magic" has an invalid Multiverse ID "-2147385342".
+  # "Sakura-Tribe Elder" from "Friday Night Magic" has an invalid Multiverse ID "-2147385229".
+  # "Wild Mongrel" from "Friday Night Magic" has an invalid Multiverse ID "-2147385271".
+  # "Cultivate" from "Friday Night Magic" has an invalid Multiverse ID "-2147385209".
+  # "River Boa" from "Friday Night Magic" has an invalid Multiverse ID "-2147385343".
+  # "Blastoderm" from "Friday Night Magic" has an invalid Multiverse ID "-2147385285".
+  # "Mogg Fanatic" from "Friday Night Magic" has an invalid Multiverse ID "-2147385315".
+  # "Firebolt" from "Friday Night Magic" has an invalid Multiverse ID "-2147385264".
+  # "Fireslinger" from "Friday Night Magic" has an invalid Multiverse ID "-2147385320".
+  # "Carnophage" from "Friday Night Magic" has an invalid Multiverse ID "-2147385328".
+  # "Desert" from "Friday Night Magic" has an invalid Multiverse ID "-2147385245".
+  # "Teetering Peaks" from "Friday Night Magic" has an invalid Multiverse ID "-2147385208".
+  # "Armadillo Cloak" from "Friday Night Magic" has an invalid Multiverse ID "-2147385275".
+  # "Force Spike" from "Friday Night Magic" has an invalid Multiverse ID "-2147385253".
+  # "Serrated Arrows" from "Friday Night Magic" has an invalid Multiverse ID "-2147385243".
+  # "Deep Analysis" from "Friday Night Magic" has an invalid Multiverse ID "-2147385263".
+  # "Sparksmith" from "Friday Night Magic" has an invalid Multiverse ID "-2147385303".
+  # "Basking Rootwalla" from "Friday Night Magic" has an invalid Multiverse ID "-2147385261".
+  # "Goblin Legionnaire" from "Friday Night Magic" has an invalid Multiverse ID "-2147385259".
+  # "Qasali Pridemage" from "Friday Night Magic" has an invalid Multiverse ID "-2147385220".
+  # "Arc Lightning" from "Arena League" has an invalid Multiverse ID "-2147254230".
+  # "Dauthi Slayer" from "Arena League" has an invalid Multiverse ID "-2147254229".
+  # "Skirk Marauder" from "Arena League" has an invalid Multiverse ID "-2147254222".
+  # "Bonesplitter" from "Arena League" has an invalid Multiverse ID "-2147254220".
+  # "Skyknight Legionnaire" from "Arena League" has an invalid Multiverse ID "-2147254198".
+  # "Diabolic Edict" from "Arena League" has an invalid Multiverse ID "-2147254235".
+  # "Gather the Townsfolk" from "WPN/Gateway" has an invalid Multiverse ID "-2147221425".
+  # "Gravedigger" from "WPN/Gateway" has an invalid Multiverse ID "-2147221488".
+  # "Woolly Thoctar" from "WPN/Gateway" has an invalid Multiverse ID "-2147221482".
+  # "Maul Splicer" from "WPN/Gateway" has an invalid Multiverse ID "-2147221432".
+  # "Boomerang" from "WPN/Gateway" has an invalid Multiverse ID "-2147221500".
+  # "Mind Stone" from "WPN/Gateway" has an invalid Multiverse ID "-2147221493".
+  # "Vault Skirge" from "WPN/Gateway" has an invalid Multiverse ID "-2147221433".
+  # "Icatian Javelineers" from "WPN/Gateway" has an invalid Multiverse ID "-2147221502".
+  # "Fated Conflagration" from "Media Inserts" has an invalid Multiverse ID "-2147450801".
+  # "Ratchet Bomb" from "Media Inserts" has an invalid Multiverse ID "-2147450813".
+  # "Kiora's Follower" from "Magic Game Day Cards" has an invalid Multiverse ID "-2147352543".
+  # "Liliana's Specter" from "Magic Game Day Cards" has an invalid Multiverse ID "-2147352574".
+  # "Scourge of Fleets" from "Prerelease Events" has an invalid Multiverse ID "-2147385265".
+  # "Heroes' Bane" from "Prerelease Events" has an invalid Multiverse ID "-2147385262".
+  # "Deep Analysis" from "Friday Night Magic" has an invalid Multiverse ID "-2147385263".
+  # "Dawnbringer Charioteers" from "Prerelease Events" has an invalid Multiverse ID "-2147385266".
+  # "Feast of Blood" from "Media Inserts" has an invalid Multiverse ID "-2147418069".
+  # "Batterskull" from "Grand Prix" has an invalid Multiverse ID "-2147188726".
+  # "Electrolyze" from "Media Inserts" has an invalid Multiverse ID "-2147418070".
+  # "Arrest" from "Media Inserts" has an invalid Multiverse ID "-2147418059".
+
+  
+  # Now that all the mappings are setup, return the mapped value if it exists,
+  # or return the original id
+  if cardmapping.has_key?(cardid)
+    return cardmapping[cardid]
+  else
+    return cardid
+  end
+end
 
 def mkcoll2 (xml,outputfile)
   # Using a temporary array of card ideas as a way of quickly checking which
@@ -108,14 +233,22 @@ def mkcoll2 (xml,outputfile)
   xml['list'].first['mcp'].each do |card|
     unless card['special'] and card['special'].first.include?('loantome')
       # Custom sets in Magic Assistant start with a -
+      cardid = ''
       unless card['card'].first['id'].first.start_with?('-')
-        unless cardids.include?(card['card'].first['id'].first)
+        cardid = card['card'].first['id'].first
+      else
+        cardid = getmultiverseid(card['card'].first['id'].first)
+      end
+      # Now we've translated IDs where possible; proceed with adding the cards
+      # to the staging array for writing, unless they still have an invalid ID
+      unless cardid.start_with?('-')
+        unless cardids.include?(cardid)
           # This means that we haven't encountered this multiverse id before
           # Now that we're adding it to the cards array, note here that
           # we've encountered it
-          cardids << card['card'].first['id'].first
+          cardids << cardid
           newcard = {}
-          newcard['id'] = card['card'].first['id'].first
+          newcard['id'] = cardid
           unless card['special'] and card['special'].first.include?('foil')
             newcard['regulars'] = card['count'].first.to_i
             newcard['foils'] = 0
@@ -128,11 +261,13 @@ def mkcoll2 (xml,outputfile)
           # We've already encountered this multiverseid at least once, so
           # increment ownership numbers instead
           unless card['special'] and card['special'].first.include?('foil')
-            cards[cardids.index(card['card'].first['id'].first)]['regulars'] += card['count'].first.to_i
+            cards[cardids.index(cardid)]['regulars'] += card['count'].first.to_i
           else
-            cards[cardids.index(card['card'].first['id'].first)]['foils'] += card['count'].first.to_i
+            cards[cardids.index(cardid)]['foils'] += card['count'].first.to_i
           end
         end
+      else
+        puts "Skipping card \"#{card['card'].first['name'].first}\" from \"#{card['card'].first['edition'].first}\" due to its invalid Multiverse ID \"#{cardid}\"."
       end
     end
   end
