@@ -110,17 +110,30 @@ def getmultiverseid (cardid)
   cardmapping = {}
   # DotP Scavenging Ooze promo -> Magic 2014 version
   cardmapping['-2147450810'] = '370629'
-  # "Ponder" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354851".
-  # "Rampant Growth" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354843".
-  # "Giant Growth" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354867".
-  # "Terminate" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354841".
-  # "Mana Leak" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354872".
-  # "Lightning Bolt" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354840".
-  # "Searing Blaze" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354827".
-  # "Terror" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354875".
-  # "Sign in Blood" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354838".
-  # "Fireball" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354874".
-  # "Doom Blade" from "Magic Player Rewards" has an invalid Multiverse ID "-2143354829".
+  # Magic Player Rewards Ponder -> Magic 2010 version
+  cardmapping['-2143354851'] = '190159'
+  # Magic Player Rewards Rampant Growth -> 9th Edition version
+  cardmapping['-2143354843'] = '83221'
+  # Magic Player Rewards Giant Growth -> Alpha version
+  cardmapping['-2143354867'] = '153'
+  # Magic Player Rewards Terminate -> Sorin vs Tibalt version
+  cardmapping['-2143354841'] = '368491'
+  # Magic Player Rewards Mana Leak -> 9th Edition version
+  cardmapping['-2143354872'] = '83160'
+  # Magic Player Rewards Lightning Bolt -> Alpha version
+  cardmapping['-2143354840'] = '209'
+  # Magic Player Rewards Searing Blaze -> Venser vs Koth version
+  cardmapping['-2143354827'] = '270873'
+  # Magic Player Rewards Terror -> Alpha version
+  cardmapping['-2143354875'] = '86'
+  # Magic Player Rewards Sign in Blood -> Magic 2011 version
+  cardmapping['-2143354838'] = '205118'
+  # Magic Player Rewards Fireball -> Alpha version
+  cardmapping['-2143354874'] = '197'
+  # Magic Player Rewards Doom Blade -> Magic 2011 version
+  cardmapping['-2143354829'] = '205088'
+  # Grand Prix Batterskull -> New Phyrexia version
+  cardmapping['-2147188726'] = '233055'
   # "Faithless Looting" from "Media Inserts" has an invalid Multiverse ID "-2147450841".
   # "Treasure Hunt" from "Media Inserts" has an invalid Multiverse ID "-2147450842".
   # "Serra Avatar" from "Media Inserts" has an invalid Multiverse ID "-2147450832".
@@ -211,7 +224,6 @@ def getmultiverseid (cardid)
   # "Deep Analysis" from "Friday Night Magic" has an invalid Multiverse ID "-2147385263".
   # "Dawnbringer Charioteers" from "Prerelease Events" has an invalid Multiverse ID "-2147385266".
   # "Feast of Blood" from "Media Inserts" has an invalid Multiverse ID "-2147418069".
-  # "Batterskull" from "Grand Prix" has an invalid Multiverse ID "-2147188726".
   # "Electrolyze" from "Media Inserts" has an invalid Multiverse ID "-2147418070".
   # "Arrest" from "Media Inserts" has an invalid Multiverse ID "-2147418059".
 
