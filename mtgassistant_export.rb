@@ -330,7 +330,7 @@ def mkdeckboxinv(cardxml,outputdir)
         else
           linetoadd << ''
         end
-        linetoadd << card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013')
+        linetoadd << card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013').gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
         if hasparm?('played',card)
           linetoadd << 'Played'
         else
