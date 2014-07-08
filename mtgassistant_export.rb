@@ -35,10 +35,19 @@ end
 
 def hasparm? (parm,cardobj)
   if cardobj['special']
-    if cardobj['special'].include? parm
-      return true
+    # Check to see if there are multiple special tags, which will be shown in an array
+    if cardobj['special'].kind_of?(Array)
+      if cardobj['special'].first.include? parm
+        return true
+      else
+        return false
+      end
     else
-      return false
+      if cardobj['special'].include? parm
+        return true
+      else
+        return false
+      end
     end
   else
     return false
