@@ -118,8 +118,19 @@ def getmultiverseid (cardid,cardname)
   
   if response.code == "200"
     result = JSON.parse(response.body)
-    puts "Translating card #{cardname} (card id #{cardid}) to card id #{result.first['id']} for Decked Builder"
-    return result.first['id']
+    # Sometimes the api will return a hash like "{"name":"Ponder","id":null}"
+    # Check here for null responses and skip to the next id
+    new_card_id = ''
+    index_under_eval = 0
+    while new_card_id == ''
+      if result[index_under_eval]['id'].is_a?(String)
+        new_card_id = result[index_under_eval]['id']
+      else
+        index_under_eval += 1
+      end
+    end
+    puts "Translating card #{cardname} (card id #{cardid}) to card id #{new_card_id} for Decked Builder"
+    return new_card_id
   else
     puts "Unable to translate card #{cardname} (card id #{cardid}) - mtgapi returned http code #{response.code}"
     return cardid
