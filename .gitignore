@@ -1,5 +1,6 @@
 # staging data files
 magicdeckboxstaging.csv
+tradelist.yml
 
 *.py[cod]
 

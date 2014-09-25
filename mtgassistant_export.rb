@@ -27,6 +27,7 @@ require 'bundler/setup'
 require "json"
 require "net/http"
 require "uri"
+require "yaml/store"
 
 def parsexml(xmlfile)
   require 'xmlsimple'
@@ -66,18 +67,26 @@ def sendtodeckbox? (cardobj)
   end
 end
 
-def gettradecount (cardobj)
-  # TODO - Add support for manual tradecounts
-  specialsets = ['Archenemy','Magic: The Gathering-Commander','Commander 2013 Edition','Planechase','Planechase 2012 Edition']
-  unless specialsets.include?(cardobj['card'].first['edition'].first) or cardobj['card'].first['edition'].first.include?('Duel Deck')
-    if cardobj['count'].first.to_i > 4
-      return (cardobj['count'].first.to_i - 4).to_s
-    else
-      return '0'
-    end
-  else
-    return '0'
+def gettradecount (cardobj,tradelistfile)
+  require "yaml/store"
+  
+  tradecount = '0'
+  # First, generate a simple tradecount
+  if cardobj['count'].first.to_i > 4
+    tradecount = (cardobj['count'].first.to_i - 4).to_s
   end
+  # Now, if a manual tradelist specified, check it for an override
+  if tradelistfile != ''
+    store = YAML::Store.new(tradelistfile)
+    if store.transaction { store[cardobj['card'].first['name'].first] }
+      if cardobj['card'].first['edition'].first == (store.transaction { store[cardobj['card'].first['name'].first]['edition'] })
+        if hasparm?('foil',cardobj) == (store.transaction { store[cardobj['card'].first['name'].first]['foil'] })
+          tradecount = store.transaction { store[cardobj['card'].first['name'].first]['trade_count'] }
+        end
+      end
+    end
+  end
+  return tradecount
 end
 
 def mkdecklist (xml,outputdir)
@@ -200,14 +209,15 @@ def mkcoll2 (xml,outputfile)
   end
 end  
 
-def mkdeckboxinv(cardxml,outputdir)
+def mkdeckboxinv(cardxml,outputdir,tradelistfile)
   require 'csv'
   CSV.open("#{outputdir}/main.csv", "wb") do |csv|
+    #TODO - Add Card Number as new field after Language
     csv << ['Count','Tradelist Count','Name','Foil','Textless','Promo','Signed','Edition','Condition','Language']
     cardxml['list'].first['mcp'].each do |card|
       if sendtodeckbox?(card)
         linetoadd = [card['count'].first]
-        linetoadd << gettradecount(card)
+        linetoadd << gettradecount(card,tradelistfile)
         cardname = card['card'].first['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae').gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
         linetoadd << cardname
         if hasparm?('foil',card)
@@ -272,6 +282,20 @@ if __FILE__ == $0
       options[:deckedoutfile] = f
     end
     
+    # Optional YAML file to override trade counts
+    # e.g:
+    # ---
+    # Spellskite:
+    #   edition: New Phyrexia
+    #   foil: false
+    #   trade_count: '0'
+    # Giant Growth:
+    # (etc)
+    options[:tradelistfile] = ''
+    opts.on( '-t', '--tradelist FILE', "Manual tradelist file" ) do |f|
+      options[:tradelistfile] = f
+    end
+    
     # This displays the help screen, all programs are
     # assumed to have this option.
     opts.on( '-h', '--help', 'Display this screen' ) do
@@ -305,5 +329,5 @@ if __FILE__ == $0
     mkcoll2(mainxml,options[:deckedoutfile])
   end
   
-  mkdeckboxinv(mainxml,options[:outputdir])
+  mkdeckboxinv(mainxml,options[:outputdir],options[:tradelistfile])
 end
