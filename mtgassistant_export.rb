@@ -177,7 +177,13 @@ def mkcoll2 (xml,outputfile)
       unless card['card'].first['id'].first.start_with?('-')
         cardid = card['card'].first['id'].first
       else
-        cardid = getmultiverseid(card['card'].first['id'].first,card['card'].first['name'].first)
+        # FIXME - adding a manual workaround for broken split card
+        # Once new api is stable should switch to it and refactor
+        if card['card'].first['name'].first == 'Fire // Ice (Fire)'
+          cardid = '27166'
+        else
+          cardid = getmultiverseid(card['card'].first['id'].first,card['card'].first['name'].first)
+        end
       end
       # Now we've translated IDs where possible; proceed with adding the cards
       # to the staging array for writing, unless they still have an invalid ID
