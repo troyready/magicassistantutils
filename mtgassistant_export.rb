@@ -149,7 +149,7 @@ end
 def getcollnumber (cardid,cardname)
   # This will find the card collector number for a given card
   
-  uri = URI.parse("http://api.mtgapi.com/v2/cards?name=#{cardname.gsub(/ /, '%20')}")
+  uri = URI.parse("http://api.mtgapi.com/v2/cards?multiverseid=#{cardid}")
   
   http = Net::HTTP.new(uri.host, uri.port)
   request = Net::HTTP::Get.new(uri.request_uri)
@@ -158,13 +158,7 @@ def getcollnumber (cardid,cardname)
   
   if response.code == "200"
     result = JSON.parse(response.body)
-    card_coll_num = ''
-    result['cards'].each do |card|
-      if card['multiverseid'].to_s == cardid
-        card_coll_num = card['number']
-      end
-    end
-    return card_coll_num
+    return result['cards'][0]['number']
   else
     puts "Unable to find collector's number for #{cardname} - mtgapi returned http code #{response.code}"
     return ''
@@ -272,9 +266,12 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile)
         end
         # FIXME - Language check?
         linetoadd << 'English'
-        # If this is a basic land, look up it's collector number
-        if ['Plains','Island','Swamp','Mountain','Forest'].include? (card['card'].first['name'].first)
-          linetoadd << getcollnumber(card['card'].first['id'].first,card['card'].first['name'].first)
+        # If this is a basic land, look up its collector number
+        if (['Plains','Island','Swamp','Mountain','Forest'].include? (card['card'].first['name'].first)) and not (card['card'].first['id'].first.start_with?('-'))
+          collnumber = getcollnumber(card['card'].first['id'].first,card['card'].first['name'].first)
+          unless collnumber == ''
+            linetoadd << collnumber
+          end
         end
         csv << linetoadd
       end
