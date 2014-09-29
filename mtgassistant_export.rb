@@ -146,6 +146,31 @@ def getmultiverseid (cardid,cardname)
   end
 end
 
+def getcollnumber (cardid,cardname)
+  # This will find the card collector number for a given card
+  
+  uri = URI.parse("http://api.mtgapi.com/v2/cards?name=#{cardname.gsub(/ /, '%20')}")
+  
+  http = Net::HTTP.new(uri.host, uri.port)
+  request = Net::HTTP::Get.new(uri.request_uri)
+  
+  response = http.request(request)
+  
+  if response.code == "200"
+    result = JSON.parse(response.body)
+    card_coll_num = ''
+    result['cards'].each do |card|
+      if card['multiverseid'].to_s == cardid
+        card_coll_num = card['number']
+      end
+    end
+    return card_coll_num
+  else
+    puts "Unable to find collector's number for #{cardname} - mtgapi returned http code #{response.code}"
+    return ''
+  end
+end
+
 def mkcoll2 (xml,outputfile)
   # Using a temporary array of card ideas as a way of quickly checking which
   # cards have already been encountered
@@ -212,8 +237,7 @@ end
 def mkdeckboxinv(cardxml,outputdir,tradelistfile)
   require 'csv'
   CSV.open("#{outputdir}/main.csv", "wb") do |csv|
-    #TODO - Add Card Number as new field after Language
-    csv << ['Count','Tradelist Count','Name','Foil','Textless','Promo','Signed','Edition','Condition','Language']
+    csv << ['Count','Tradelist Count','Name','Foil','Textless','Promo','Signed','Edition','Condition','Language','Card Number']
     cardxml['list'].first['mcp'].each do |card|
       if sendtodeckbox?(card)
         linetoadd = [card['count'].first]
@@ -248,6 +272,10 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile)
         end
         # FIXME - Language check?
         linetoadd << 'English'
+        # If this is a basic land, look up it's collector number
+        if ['Plains','Island','Swamp','Mountain','Forest'].include? (card['card'].first['name'].first)
+          linetoadd << getcollnumber(card['card'].first['id'].first,card['card'].first['name'].first)
+        end
         csv << linetoadd
       end
     end
