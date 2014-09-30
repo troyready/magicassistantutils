@@ -272,12 +272,17 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile)
         end
         # FIXME - Language check?
         linetoadd << 'English'
-        # If this is a basic land, look up its collector number
+        # Check to see if the collector number should be added
+        # First check is to see if it's a basic land
         if (['Plains','Island','Swamp','Mountain','Forest'].include? (card['card'].first['name'].first)) and not (card['card'].first['id'].first.start_with?('-'))
           collnumber = getcollnumber(card['card'].first['id'].first,card['card'].first['name'].first)
           unless collnumber == ''
             linetoadd << collnumber
           end
+        # Next, if the card is a token (or otherwise from the 'Extras' deckbox set), map its collectors number to the last
+        # two digits of its multiverse id
+        elsif card['card'].first['edition'].first.start_with?('Extras:')
+          linetoadd << card['card'].first['id'].first.split(//).last(2).join("").to_s
         end
         csv << linetoadd
       end
