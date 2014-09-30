@@ -93,7 +93,7 @@ def mkdecklist (xml,outputdir)
   decklistnames = []
   decklistcount = []
   xml['list'].first['mcp'].each do |card|
-    unless card['special'] and card['special'].first.include?('loantome')
+    unless (card['special'] and card['special'].first.include?('loantome')) or card['edition'].first.start_with?('Extras:')
       if decklistnames.include?(card['card'].first['name'].first)
         decklistcount[decklistnames.index(card['card'].first['name'].first)] += card['count'].first.to_i
       else
@@ -171,7 +171,7 @@ def mkcoll2 (xml,outputfile)
   cardids = []
   cards = []
   xml['list'].first['mcp'].each do |card|
-    unless card['special'] and card['special'].first.include?('loantome')
+    unless (card['special'] and card['special'].first.include?('loantome')) or card['edition'].first.start_with?('Extras:')
       # Custom sets in Magic Assistant start with a -
       cardid = ''
       unless card['card'].first['id'].first.start_with?('-')
