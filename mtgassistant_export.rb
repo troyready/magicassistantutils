@@ -249,13 +249,13 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile)
         # First check is to see if it's a basic land
         if (['Plains','Island','Swamp','Mountain','Forest'].include? (card['card'].first['name'].first)) and not (card['card'].first['id'].first.start_with?('-'))
           collnumber = getcollnumber(card['card'].first['id'].first,card['card'].first['name'].first)
-          unless collnumber == ''
-            linetoadd << collnumber
-          end
+          linetoadd << collnumber
         # Next, if the card is a token (or otherwise from the 'Extras' deckbox set), map its collectors number to the last
         # two digits of its multiverse id
         elsif card['card'].first['edition'].first.start_with?('Extras:')
           linetoadd << card['card'].first['id'].first.split(//).last(2).join("").to_s
+        else
+          linetoadd << ''
         end
         if hasparm?('played',card)
           linetoadd << 'Played'
