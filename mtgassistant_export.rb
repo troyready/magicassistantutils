@@ -237,41 +237,14 @@ end
 def mkdeckboxinv(cardxml,outputdir,tradelistfile)
   require 'csv'
   CSV.open("#{outputdir}/main.csv", "wb") do |csv|
-    csv << ['Count','Tradelist Count','Name','Foil','Textless','Promo','Signed','Edition','Condition','Language','Card Number']
+    csv << ['Count','Tradelist Count','Name','Edition','Card Number','Condition','Language','Foil','Signed','Artist Proof','Altered Art','Misprint','Promo','Textless','My Price']
     cardxml['list'].first['mcp'].each do |card|
       if sendtodeckbox?(card)
         linetoadd = [card['count'].first]
         linetoadd << gettradecount(card,tradelistfile)
         cardname = card['card'].first['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae').gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
         linetoadd << cardname
-        if hasparm?('foil',card)
-          linetoadd << 'foil'
-        else
-          linetoadd << ''
-        end
-        if hasparm?('textless',card)
-          linetoadd << 'textless'
-        else
-          linetoadd << ''
-        end
-        if hasparm?('promo',card)
-          linetoadd << 'promo'
-        else
-          linetoadd << ''
-        end
-        if hasparm?('signed',card)
-          linetoadd << 'signed'
-        else
-          linetoadd << ''
-        end
         linetoadd << card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013').gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy').gsub(/Annihilation \(2014\)/, 'Annihilation')
-        if hasparm?('played',card)
-          linetoadd << 'Played'
-        else
-          linetoadd << 'Near Mint'
-        end
-        # FIXME - Language check?
-        linetoadd << 'English'
         # Check to see if the collector number should be added
         # First check is to see if it's a basic land
         if (['Plains','Island','Swamp','Mountain','Forest'].include? (card['card'].first['name'].first)) and not (card['card'].first['id'].first.start_with?('-'))
@@ -284,6 +257,38 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile)
         elsif card['card'].first['edition'].first.start_with?('Extras:')
           linetoadd << card['card'].first['id'].first.split(//).last(2).join("").to_s
         end
+        if hasparm?('played',card)
+          linetoadd << 'Played'
+        else
+          linetoadd << 'Near Mint'
+        end
+        # FIXME - Language check?
+        linetoadd << 'English'
+        if hasparm?('foil',card)
+          linetoadd << 'foil'
+        else
+          linetoadd << ''
+        end
+        # FIXME - Signed check
+        linetoadd << ''
+        # FIXME - Artist Proof check
+        linetoadd << ''
+        # FIXME - Altered Art check
+        linetoadd << ''
+        # FIXME - Misprint check
+        linetoadd << ''
+        if hasparm?('promo',card)
+          linetoadd << 'promo'
+        else
+          linetoadd << ''
+        end
+        if hasparm?('textless',card)
+          linetoadd << 'textless'
+        else
+          linetoadd << ''
+        end
+        # FIXME - My Price check
+        linetoadd << ''
         csv << linetoadd
       end
     end
