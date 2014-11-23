@@ -171,7 +171,7 @@ def mkcoll2 (xml,outputfile)
   cardids = []
   cards = []
   xml['list'].first['mcp'].each do |card|
-    unless (card['special'] and card['special'].first.include?('loantome')) or card['card'].first['edition'].first.start_with?('Extras:')
+    unless (card['special'] and card['special'].first.include?('loantome')) or card['card'].first['edition'].first.start_with?('Extras:') or card['card'].first['edition'].first.start_with?('Oversized:')
       # Custom sets in Magic Assistant start with a -
       cardid = ''
       unless card['card'].first['id'].first.start_with?('-')
