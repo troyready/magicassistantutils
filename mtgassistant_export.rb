@@ -67,13 +67,13 @@ def sendtodeckbox? (cardobj)
   end
 end
 
-def gettradecount (cardobj,tradelistfile)
+def gettradecount (cardobj,tradelistfile,tradecountdefault)
   require "yaml/store"
   
   tradecount = '0'
   # First, generate a simple tradecount
-  if cardobj['count'].first.to_i > 4
-    tradecount = (cardobj['count'].first.to_i - 4).to_s
+  if cardobj['count'].first.to_i > tradecountdefault
+    tradecount = (cardobj['count'].first.to_i - tradecountdefault).to_s
   end
   # Now, if a manual tradelist specified, check it for an override
   if tradelistfile != ''
@@ -234,14 +234,14 @@ def mkcoll2 (xml,outputfile)
   end
 end  
 
-def mkdeckboxinv(cardxml,outputdir,tradelistfile)
+def mkdeckboxinv(cardxml,outputdir,tradelistfile,tradecountdefault)
   require 'csv'
   CSV.open("#{outputdir}/main.csv", "wb") do |csv|
     csv << ['Count','Tradelist Count','Name','Edition','Card Number','Condition','Language','Foil','Signed','Artist Proof','Altered Art','Misprint','Promo','Textless','My Price']
     cardxml['list'].first['mcp'].each do |card|
       if sendtodeckbox?(card)
         linetoadd = [card['count'].first]
-        linetoadd << gettradecount(card,tradelistfile)
+        linetoadd << gettradecount(card,tradelistfile,tradecountdefault)
         cardname = card['card'].first['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae').gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
         linetoadd << cardname
         linetoadd << card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013').gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy').gsub(/Annihilation \(2014\)/, 'Annihilation')
@@ -336,6 +336,11 @@ if __FILE__ == $0
     opts.on( '-t', '--tradelist FILE', "Manual tradelist file" ) do |f|
       options[:tradelistfile] = f
     end
+	
+    options[:tradecountdefault] = 4
+    opts.on( '-T', '--tradecountdefault N', "Cards above this number will be considered trade-able; defaults to 4" ) do |f|
+      options[:tradecountdefault] = f.to_i
+    end
     
     # This displays the help screen, all programs are
     # assumed to have this option.
@@ -370,5 +375,5 @@ if __FILE__ == $0
     mkcoll2(mainxml,options[:deckedoutfile])
   end
   
-  mkdeckboxinv(mainxml,options[:outputdir],options[:tradelistfile])
+  mkdeckboxinv(mainxml,options[:outputdir],options[:tradelistfile],options[:tradecountdefault])
 end
