@@ -2,13 +2,13 @@
 # encoding: utf-8
 
 # Copyright 2014 Troy Ready
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -67,9 +67,25 @@ def sendtodeckbox? (cardobj)
   end
 end
 
+def sendtodeckedbuilder? (cardobj)
+  # Planechase plains are the specific names here - they're included in the
+  # regular Deckbox 'Planechase' set, but are not on Gatherer
+  unless (cardobj['special'] and cardobj['special'].first.include?('loantome')) or
+  cardobj['card'].first['edition'].first.start_with?('Extras:') or
+  cardobj['card'].first['edition'].first.start_with?('Oversized:') or
+  cardobj['card'].first['name'].first.start_with?('Mirrored Depths') or
+  cardobj['card'].first['name'].first.start_with?('Horizon Boughs') or
+  cardobj['card'].first['name'].first.start_with?('Celestine Reef') or
+  cardobj['card'].first['name'].first.start_with?('Tember City')
+    return true
+  else
+    return false
+  end
+end
+
 def gettradecount (cardobj,tradelistfile,tradecountdefault)
   require "yaml/store"
-  
+
   tradecount = '0'
   # First, generate a simple tradecount
   if cardobj['count'].first.to_i > tradecountdefault
@@ -112,19 +128,19 @@ def mkdecklist (xml,outputdir)
     decklist.each do |card|
       f.puts "#{card['count']} #{card['name']}\n"
     end
-  end  
+  end
 end
 
 def getmultiverseid (cardid,cardname)
   # This will translate your custom database entries into standard multiverse IDs
-  
+
   uri = URI.parse("http://api.mtgapi.com/v1/card/name/#{cardname.gsub(/ /, '%20')}")
-  
+
   http = Net::HTTP.new(uri.host, uri.port)
   request = Net::HTTP::Get.new(uri.request_uri)
-  
+
   response = http.request(request)
-  
+
   if response.code == "200"
     result = JSON.parse(response.body)
     # Sometimes the api will return a hash like "{"name":"Ponder","id":null}"
@@ -148,14 +164,14 @@ end
 
 def getcollnumber (cardid,cardname)
   # This will find the card collector number for a given card
-  
+
   uri = URI.parse("http://api.mtgapi.com/v2/cards?multiverseid=#{cardid}")
-  
+
   http = Net::HTTP.new(uri.host, uri.port)
   request = Net::HTTP::Get.new(uri.request_uri)
-  
+
   response = http.request(request)
-  
+
   if response.code == "200"
     result = JSON.parse(response.body)
     return result['cards'][0]['number']
@@ -171,7 +187,7 @@ def mkcoll2 (xml,outputfile)
   cardids = []
   cards = []
   xml['list'].first['mcp'].each do |card|
-    unless (card['special'] and card['special'].first.include?('loantome')) or card['card'].first['edition'].first.start_with?('Extras:') or card['card'].first['edition'].first.start_with?('Oversized:')
+    if sendtodeckedbuilder?(card)
       # Custom sets in Magic Assistant start with a -
       cardid = ''
       unless card['card'].first['id'].first.start_with?('-')
@@ -232,7 +248,7 @@ def mkcoll2 (xml,outputfile)
       end
     end
   end
-end  
+end
 
 def mkdeckboxinv(cardxml,outputdir,tradelistfile,tradecountdefault)
   require 'csv'
@@ -296,33 +312,33 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile,tradecountdefault)
 end
 
 if __FILE__ == $0
-  
+
   require 'optparse'
   require 'pathname'
-  
+
   # This hash will hold all of the options
   # parsed from the command-line by
   # OptionParser.
   options = {}
-  
+
   optparse = OptionParser.new do|opts|
     # TODO: Put command-line options here
-    
+
     options[:inputfile] = ""
     opts.on( '-i', '--input FILE', "Input XML file" ) do |f|
       options[:inputfile] = f
     end
-    
+
     options[:outputdir] = ""
     opts.on( '-o', '--output DIR', "Output directory" ) do |f|
       options[:outputdir] = f
     end
-    
+
     options[:deckedoutfile] = false
     opts.on( '-d', '--deckedbuilder FILE', "Decked Builder output file" ) do |f|
       options[:deckedoutfile] = f
     end
-    
+
     # Optional YAML file to override trade counts
     # e.g:
     # ---
@@ -336,12 +352,12 @@ if __FILE__ == $0
     opts.on( '-t', '--tradelist FILE', "Manual tradelist file" ) do |f|
       options[:tradelistfile] = f
     end
-	
+
     options[:tradecountdefault] = 4
     opts.on( '-T', '--tradecountdefault N', "Cards above this number will be considered trade-able; defaults to 4" ) do |f|
       options[:tradecountdefault] = f.to_i
     end
-    
+
     # This displays the help screen, all programs are
     # assumed to have this option.
     opts.on( '-h', '--help', 'Display this screen' ) do
@@ -349,31 +365,31 @@ if __FILE__ == $0
       exit
     end
   end
-  
+
   optparse.parse!
-  
+
   if options[:inputfile] == nil
     print 'Enter input XML file: '
     options[:inputfile] = gets.chomp
   end
-  
+
   if options[:outputdir] == nil
     print 'Enter output directory for files: '
     options[:outputdir] = Pathname(gets.chomp).cleanpath.to_s
   end
-  
+
   unless Pathname(options[:outputdir]).directory?
     puts "\"#{options[:outputdir]}\" is not a valid directory"
   end
-  
+
   # Option set; start the processing
   mainxml = parsexml(options[:inputfile])
-  
+
   mkdecklist(mainxml,options[:outputdir])
-  
+
   if options[:deckedoutfile]
     mkcoll2(mainxml,options[:deckedoutfile])
   end
-  
+
   mkdeckboxinv(mainxml,options[:outputdir],options[:tradelistfile],options[:tradecountdefault])
 end
