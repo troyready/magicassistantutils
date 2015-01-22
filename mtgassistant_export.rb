@@ -29,6 +29,7 @@ require "net/http"
 require "uri"
 require "yaml/store"
 
+# Returns an object with the file's parsed contents
 def parsexml(xmlfile)
   require 'xmlsimple'
   XmlSimple.xml_in(xmlfile)
