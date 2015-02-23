@@ -261,7 +261,7 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile,tradecountdefault)
         linetoadd << gettradecount(card,tradelistfile,tradecountdefault)
         cardname = card['card'].first['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae').gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
         linetoadd << cardname
-        linetoadd << card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013').gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy').gsub(/Annihilation \(2014\)/, 'Annihilation')
+        linetoadd << card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013').gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy').gsub(/Annihilation \(2014\)/, 'Annihilation').gsub(/Ugin booster for Fate Reforged Prerelease/, 'Ugin\'s Fate Promos')
         # Check to see if the collector number should be added
         # First check is to see if it's a basic land
         if (['Plains','Island','Swamp','Mountain','Forest'].include? (card['card'].first['name'].first)) and not (card['card'].first['id'].first.start_with?('-'))
