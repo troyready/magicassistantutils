@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-# Copyright 2014 Troy Ready
+# Copyright 2015 Troy Ready
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,6 +68,7 @@ def sendtodeckbox? (cardobj)
   end
 end
 
+# Also used by the mtgprice check
 def sendtodeckedbuilder? (cardobj)
   # Planechase plains are the specific names here - they're included in the
   # regular Deckbox 'Planechase' set, but are not on Gatherer
@@ -261,7 +262,7 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile,tradecountdefault)
         linetoadd << gettradecount(card,tradelistfile,tradecountdefault)
         cardname = card['card'].first['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae').gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
         linetoadd << cardname
-        linetoadd << card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013').gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy').gsub(/Annihilation \(2014\)/, 'Annihilation').gsub(/Ugin booster for Fate Reforged Prerelease/, 'Ugin\'s Fate Promos')
+        linetoadd << card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013').gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy').gsub(/Annihilation \(2014\)/, 'Annihilation')
         # Check to see if the collector number should be added
         # First check is to see if it's a basic land
         if (['Plains','Island','Swamp','Mountain','Forest'].include? (card['card'].first['name'].first)) and not (card['card'].first['id'].first.start_with?('-'))
@@ -311,6 +312,41 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile,tradecountdefault)
     end
   end
 end
+
+def mk_mtg_price(cardxml,outputdir)
+  require 'csv'
+  card_hash = {}
+  cardxml['list'].first['mcp'].each do |card|
+    if sendtodeckedbuilder?(card)
+      cardname = card['card'].first['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae').gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
+      edition = card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013').gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy').gsub(/Annihilation \(2014\)/, 'Annihilation')
+      if !edition.include?('Prerelease ') && hasparm?('foil',card)
+        edition = "#{edition} (Foil)"
+        foil = 'true'
+      else
+        foil = 'false'
+      end
+      if card_hash.has_key?("#{cardname}---#{edition}")
+        card_hash["#{cardname}---#{edition}"]['count'] =
+          (card_hash["#{cardname}---#{edition}"]['count'].to_i +
+          card['count'].first.to_i).to_s
+      else
+        card_hash["#{cardname}---#{edition}"] = {'name' => cardname, 'edition'=> edition, 'foil'=> foil, 'count'=> card['count'].first}
+      end
+    end
+  end
+
+  CSV.open("#{outputdir}/mtgprice_coll.csv", "wb") do |csv|
+    card_hash.sort.map do |k,v|
+      csv << [v['count'],"#{v['name']}FORCE_COMMAS,",v['edition'],v['foil']]
+    end
+  end
+  IO.write("#{outputdir}/mtgprice_coll.csv", File.open("#{outputdir}/mtgprice_coll.csv") do |f|
+      f.read.gsub(/FORCE_COMMAS,/, '')
+    end
+  )
+end
+
 
 if __FILE__ == $0
 
@@ -393,4 +429,6 @@ if __FILE__ == $0
   end
 
   mkdeckboxinv(mainxml,options[:outputdir],options[:tradelistfile],options[:tradecountdefault])
+
+  mk_mtg_price(mainxml,options[:outputdir])
 end
