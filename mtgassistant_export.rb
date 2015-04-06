@@ -68,7 +68,6 @@ def sendtodeckbox? (cardobj)
   end
 end
 
-# Also used by the mtgprice check
 def sendtodeckedbuilder? (cardobj)
   # Planechase plains are the specific names here - they're included in the
   # regular Deckbox 'Planechase' set, but are not on Gatherer
@@ -82,6 +81,42 @@ def sendtodeckedbuilder? (cardobj)
     return true
   else
     return false
+  end
+end
+
+def sendtomtgprice? (cardobj)
+  # Planechase plains are the specific names here - they're included in the
+  # regular Deckbox 'Planechase' set, but are not on Gatherer
+  if cardobj['special'] && cardobj['special'].first.include?('loantome') ||
+  cardobj['card'].first['edition'].first.start_with?('Extras:') ||
+  cardobj['card'].first['edition'].first.start_with?('Oversized:') ||
+  cardobj['card'].first['edition'].first.start_with?('Launch Parties') ||
+  cardobj['card'].first['edition'].first.start_with?('Prerelease Events') ||
+  cardobj['card'].first['edition'].first.start_with?('Modern Event Deck 2014') ||
+  cardobj['card'].first['edition'].first.start_with?('Magic 2015 Clash Pack ') ||
+  cardobj['card'].first['edition'].first.start_with?('Fate Reforged Clash Pack ') ||
+  cardobj['card'].first['edition'].first.start_with?('Ugin\'s Fate ') ||
+  cardobj['card'].first['name'].first.start_with?('Mirrored Depths') ||
+  cardobj['card'].first['name'].first.start_with?('Horizon Boughs') ||
+  cardobj['card'].first['name'].first.start_with?('Celestine Reef') ||
+  cardobj['card'].first['name'].first.start_with?('Tember City') ||
+  ([
+    'Plains',
+    'Island',
+    'Swamp',
+    'Mountain',
+    'Forest'
+   ].include?(cardobj['card'].first['name'].first) &&
+   !cardobj['card'].first['edition'].first.start_with?('Judge Gift')
+  ) ||
+  # Import can't handle the nested comma here
+  cardobj['card'].first['name'].first.start_with?('Borrowing 100,000 Arrows') ||
+  (cardobj['card'].first['name'].first.start_with?('Fire // Ice') &&
+   cardobj['card'].first['edition'].first.start_with?('Friday Night Magic'))
+
+    return false
+  else
+    return true
   end
 end
 
@@ -317,10 +352,89 @@ def mk_mtg_price(cardxml,outputdir)
   require 'csv'
   card_hash = {}
   cardxml['list'].first['mcp'].each do |card|
-    if sendtodeckedbuilder?(card)
+    if sendtomtgprice?(card)
       cardname = card['card'].first['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae').gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
-      edition = card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013').gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy').gsub(/Annihilation \(2014\)/, 'Annihilation')
-      if !edition.include?('Prerelease ') && hasparm?('foil',card)
+      edition = card['card'].first['edition'].first
+                .gsub(/Magic Game Day Cards/, 'Game Day')
+                .gsub(/Magic Player Rewards/, 'Player Rewards')
+                .gsub(/WPN\/Gateway/, 'Gateway')
+                .gsub(/Revised Edition/, 'Revised')
+                .gsub(/Fifth Edition/, '5th Edition')
+                .gsub(/Classic Sixth Edition/, '6th Edition')
+                .gsub(/Seventh Edition/, '7th Edition')
+                .gsub(/Eighth Edition/, '8th Edition')
+                .gsub(/Ninth Edition/, '9th Edition')
+                .gsub(/Tenth Edition/, '10th Edition')
+                .gsub(/Urza's/, 'Urzas')
+                .gsub(/Ravnica: City of Guilds/, 'Ravnica')
+                .gsub(/Planechase 2012 Edition/, 'Planechase 2012')
+                .gsub(/Magic 2011/, 'M11')
+                .gsub(/Magic 2012/, 'M12')
+                .gsub(/Magic 2013/, 'M13')
+                .gsub(/Magic 2014 Core Set/, 'M14')
+                .gsub(/Magic 2015 Core Set/, 'M15')
+                .gsub(/Dragon's Maze/, 'Dragons Maze')
+                .gsub(/From the Vault:/, 'From the Vault')
+                .gsub(/Commander 2013 Edition/, 'Commander 2013')
+                .gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
+                .gsub(/Annihilation \(2014\)/, 'Annihilation')
+      if [
+        'Akoum',
+        'Aretopolis',
+        'Astral Arena',
+        'Bloodhill Bastion',
+        'Chaotic Aether',
+        'Edge of Malacol',
+        'Furnace Layer',
+        'Gavony',
+        'Glen Elendra',
+        'Grand Ossuary',
+        'Grove of the Dreampods',
+        'Hedron Fields of Agadeem',
+        'Interplanar Tunnel',
+        'Jund',
+        'Kessig',
+        'Kharasha Foothills',
+        'Kilnspire District',
+        'Lair of the Ashen Idol',
+        'Morphic Tide',
+        'Mount Keralia',
+        'Mutual Epiphany',
+        'Nephalia',
+        'Norn\'s Dominion',
+        'Onakke Catacomb',
+        'Orochi Colony',
+        'Orzhova',
+        'Planewide Disaster',
+        'Prahv',
+        'Quicksilver Sea',
+        'Reality Shaping',
+        'Selesnya Loft Gardens',
+        'Spatial Merging',
+        'Stairs to Infinity',
+        'Stensia',
+        'Takenuma',
+        'Talon Gates',
+        'The Zephyr Maze',
+        'Time Distortion',
+        'Trail of the Mage-Rings',
+        'Truga Jungle',
+        'Windriddle Palaces'
+      ].include?(cardname) && edition == 'Planechase 2012'
+        edition = 'Planechase 2012 Planes'
+      end
+      if !(edition.include?('Arena League') ||
+           edition.include?('Duel Decks') ||
+           edition.include?('Friday Night Magic') ||
+           edition.include?('From the Vault') ||
+           edition.include?('Game Day') ||
+           edition.include?('Gateway') ||
+           edition.include?('Grand Prix') ||
+           edition.include?('Judge Gift') ||
+           edition.include?('Media Inserts') ||
+           edition.include?('Player Rewards') ||
+           edition.include?('Prerelease ')) &&
+         hasparm?('foil',card)
         edition = "#{edition} (Foil)"
         foil = 'true'
       else
