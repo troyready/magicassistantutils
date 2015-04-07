@@ -112,7 +112,9 @@ def sendtomtgprice? (cardobj)
   # Import can't handle the nested comma here
   cardobj['card'].first['name'].first.start_with?('Borrowing 100,000 Arrows') ||
   (cardobj['card'].first['name'].first.start_with?('Fire // Ice') &&
-   cardobj['card'].first['edition'].first.start_with?('Friday Night Magic'))
+   cardobj['card'].first['edition'].first.start_with?('Friday Night Magic')) ||
+  (cardobj['card'].first['name'].first.start_with?('Sultai Charm') &&
+   cardobj['card'].first['edition'].first.start_with?('Media Inserts'))
 
     return false
   else
@@ -369,6 +371,7 @@ def mk_mtg_price(cardxml,outputdir)
                 .gsub(/Tenth Edition/, '10th Edition')
                 .gsub(/Urza's/, 'Urzas')
                 .gsub(/Ravnica: City of Guilds/, 'Ravnica')
+                .gsub(/Time Spiral "Timeshifted"/, 'Timespiral Timeshifted')
                 .gsub(/Planechase 2012 Edition/, 'Planechase 2012')
                 .gsub(/Magic 2010/, 'M10')
                 .gsub(/Magic 2011/, 'M11')
