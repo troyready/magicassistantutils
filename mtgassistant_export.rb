@@ -58,30 +58,24 @@ end
 
 def sendtodeckbox? (cardobj)
   if cardobj['special']
-    if cardobj['special'].first.include?('loantome')
-      return false
-    else
-      return true
-    end
+    !cardobj['special'].first.include?('loantome')
   else
-    return true
+    true
   end
 end
 
 def sendtodeckedbuilder? (cardobj)
   # Planechase plains are the specific names here - they're included in the
   # regular Deckbox 'Planechase' set, but are not on Gatherer
-  unless (cardobj['special'] and cardobj['special'].first.include?('loantome')) or
-  cardobj['card'].first['edition'].first.start_with?('Extras:') or
-  cardobj['card'].first['edition'].first.start_with?('Oversized:') or
-  cardobj['card'].first['name'].first.start_with?('Mirrored Depths') or
-  cardobj['card'].first['name'].first.start_with?('Horizon Boughs') or
-  cardobj['card'].first['name'].first.start_with?('Celestine Reef') or
-  cardobj['card'].first['name'].first.start_with?('Tember City')
-    return true
-  else
-    return false
-  end
+  !(
+    (cardobj['special'] and cardobj['special'].first.include?('loantome')) or
+    cardobj['card'].first['edition'].first.start_with?('Extras:') or
+    cardobj['card'].first['edition'].first.start_with?('Oversized:') or
+    cardobj['card'].first['name'].first.start_with?('Mirrored Depths') or
+    cardobj['card'].first['name'].first.start_with?('Horizon Boughs') or
+    cardobj['card'].first['name'].first.start_with?('Celestine Reef') or
+    cardobj['card'].first['name'].first.start_with?('Tember City')
+  )
 end
 
 def sendtomtgprice? (cardobj)
@@ -173,7 +167,9 @@ end
 def getmultiverseid (cardid,cardname)
   # This will translate your custom database entries into standard multiverse IDs
 
-  uri = URI.parse("http://api.mtgapi.com/v1/card/name/#{cardname.gsub(/ /, '%20')}")
+  uri = URI.parse(
+    "http://api.mtgapi.com/v1/card/name/#{cardname.gsub(/ /, '%20')}"
+  )
 
   http = Net::HTTP.new(uri.host, uri.port)
   request = Net::HTTP::Get.new(uri.request_uri)
@@ -193,10 +189,12 @@ def getmultiverseid (cardid,cardname)
         index_under_eval += 1
       end
     end
-    puts "Translating card #{cardname} (card id #{cardid}) to card id #{new_card_id} for Decked Builder"
+    puts "Translating card #{cardname} (card id #{cardid}) to card id "\
+         "#{new_card_id} for Decked Builder"
     return new_card_id
   else
-    puts "Unable to translate card #{cardname} (card id #{cardid}) - mtgapi returned http code #{response.code}"
+    puts "Unable to translate card #{cardname} (card id #{cardid}) - mtgapi "\
+         "returned http code #{response.code}"
     return cardid
   end
 end
@@ -215,7 +213,8 @@ def getcollnumber (cardid,cardname)
     result = JSON.parse(response.body)
     return result['cards'][0]['number']
   else
-    puts "Unable to find collector's number for #{cardname} - mtgapi returned http code #{response.code}"
+    puts "Unable to find collector's number for #{cardname} - mtgapi "\
+         "returned http code #{response.code}"
     return ''
   end
 end
@@ -237,7 +236,10 @@ def mkcoll2 (xml,outputfile)
         if card['card'].first['name'].first == 'Fire // Ice (Fire)'
           cardid = '27166'
         else
-          cardid = getmultiverseid(card['card'].first['id'].first,card['card'].first['name'].first)
+          cardid = getmultiverseid(
+            card['card'].first['id'].first,
+            card['card'].first['name'].first
+          )
         end
       end
       # Now we've translated IDs where possible; proceed with adding the cards
@@ -268,7 +270,9 @@ def mkcoll2 (xml,outputfile)
           end
         end
       else
-        puts "Skipping card \"#{card['card'].first['name'].first}\" from \"#{card['card'].first['edition'].first}\" due to its invalid Multiverse ID \"#{cardid}\"."
+        puts "Skipping card \"#{card['card'].first['name'].first}\" from "\
+             "\"#{card['card'].first['edition'].first}\" due to its invalid "\
+             "Multiverse ID \"#{cardid}\"."
       end
     end
   end
@@ -292,23 +296,62 @@ end
 def mkdeckboxinv(cardxml,outputdir,tradelistfile,tradecountdefault)
   require 'csv'
   CSV.open("#{outputdir}/main.csv", "wb") do |csv|
-    csv << ['Count','Tradelist Count','Name','Edition','Card Number','Condition','Language','Foil','Signed','Artist Proof','Altered Art','Misprint','Promo','Textless','My Price']
+    csv << [
+      'Count',
+      'Tradelist Count',
+      'Name',
+      'Edition',
+      'Card Number',
+      'Condition',
+      'Language',
+      'Foil',
+      'Signed',
+      'Artist Proof',
+      'Altered Art',
+      'Misprint',
+      'Promo',
+      'Textless',
+      'My Price'
+    ]
     cardxml['list'].first['mcp'].each do |card|
       if sendtodeckbox?(card)
         linetoadd = [card['count'].first]
         linetoadd << gettradecount(card,tradelistfile,tradecountdefault)
-        cardname = card['card'].first['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae').gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
+        cardname = card['card'].first['name'].first
+          .gsub(/ \(.*/, '')
+          .gsub("Æ", 'Ae')
+          .gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
         linetoadd << cardname
-        linetoadd << card['card'].first['edition'].first.gsub(/2012 Edition/, '2012').gsub(/2013 Edition/, '2013').gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy').gsub(/Annihilation \(2014\)/, 'Annihilation')
+        linetoadd << card['card'].first['edition'].first
+          .gsub(/2012 Edition/, '2012')
+          .gsub(/2013 Edition/, '2013')
+          .gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
+          .gsub(/Annihilation \(2014\)/, 'Annihilation')
         # Check to see if the collector number should be added
         # First check is to see if it's a basic land
-        if (['Plains','Island','Swamp','Mountain','Forest'].include? (card['card'].first['name'].first)) and not (card['card'].first['id'].first.start_with?('-'))
-          collnumber = getcollnumber(card['card'].first['id'].first,card['card'].first['name'].first)
+        if (
+          [
+            'Plains',
+            'Island',
+            'Swamp',
+            'Mountain',
+            'Forest'
+          ].include?(card['card'].first['name'].first)
+          ) and !(card['card'].first['id'].first.start_with?('-'))
+          collnumber = getcollnumber(
+            card['card'].first['id'].first,
+            card['card'].first['name'].first
+          )
           linetoadd << collnumber
-        # Next, if the card is a token (or otherwise from the 'Extras' deckbox set), map its collectors number to the last
-        # two digits of its multiverse id
+        # Next, if the card is a token (or otherwise from the 'Extras' deckbox
+        # set), map its collectors number to the last two digits of its
+        # multiverse id
         elsif card['card'].first['edition'].first.start_with?('Extras:')
-          linetoadd << card['card'].first['id'].first.split(//).last(2).join("").to_s
+          linetoadd << card['card'].first['id'].first
+            .split(//)
+            .last(2)
+            .join("")
+            .to_s
         else
           linetoadd << ''
         end
@@ -355,7 +398,10 @@ def mk_mtg_price(cardxml,outputdir)
   card_hash = {}
   cardxml['list'].first['mcp'].each do |card|
     if sendtomtgprice?(card)
-      cardname = card['card'].first['name'].first.gsub(/ \(.*/, '').gsub("Æ", 'Ae').gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
+      cardname = card['card'].first['name'].first
+                 .gsub(/ \(.*/, '')
+                 .gsub("Æ", 'Ae')
+                 .gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
       edition = card['card'].first['edition'].first
                 .gsub(/Magic Game Day Cards/, 'Game Day')
                 .gsub(/Magic Player Rewards/, 'Player Rewards')
@@ -451,7 +497,13 @@ def mk_mtg_price(cardxml,outputdir)
           (card_hash["#{cardname}---#{edition}"]['count'].to_i +
           card['count'].first.to_i).to_s
       else
-        card_hash["#{cardname}---#{edition}"] = {'name' => cardname, 'edition'=> edition, 'foil'=> foil, 'count'=> card['count'].first}
+        card_hash["#{cardname}---#{edition}"] =
+          {
+            'name' => cardname,
+            'edition'=> edition,
+            'foil'=> foil,
+            'count'=> card['count'].first
+          }
       end
     end
   end
@@ -461,7 +513,10 @@ def mk_mtg_price(cardxml,outputdir)
       csv << [v['count'],"#{v['name']}FORCE_COMMAS,",v['edition'],v['foil']]
     end
   end
-  IO.write("#{outputdir}/mtgprice_coll.csv", File.open("#{outputdir}/mtgprice_coll.csv") do |f|
+  IO.write(
+    "#{outputdir}/mtgprice_coll.csv",
+    File.open("#{outputdir}/mtgprice_coll.csv"
+  ) do |f|
       f.read.gsub(/FORCE_COMMAS,/, '')
     end
   )
