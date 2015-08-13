@@ -89,6 +89,7 @@ def sendtomtgprice? (cardobj)
   cardobj['card'].first['edition'].first.start_with?('Modern Event Deck 2014') ||
   cardobj['card'].first['edition'].first.start_with?('Magic 2015 Clash Pack ') ||
   cardobj['card'].first['edition'].first.start_with?('Fate Reforged Clash Pack ') ||
+  cardobj['card'].first['edition'].first.start_with?('Magic Origins Clash Pack ') ||
   cardobj['card'].first['edition'].first.start_with?('Ugin\'s Fate ') ||
   cardobj['card'].first['name'].first.start_with?('Mirrored Depths') ||
   cardobj['card'].first['name'].first.start_with?('Horizon Boughs') ||
