@@ -16,18 +16,33 @@
 # limitations under the License.
 
 ## Example card entries
-#mainxml['list'].first['mcp'].first
-# {"card"=>[{"id"=>["152727"], "name"=>["Disperse"], "edition"=>["Morningtide"]}], "count"=>["2"], "location"=>["Collections/main"], "ownership"=>["true"]}
+# mainxml['list'].first['mcp'].first
+# {
+# "card"=>[
+#   {"id"=>["152727"], "name"=>["Disperse"], "edition"=>["Morningtide"]}
+# ],
+# "count"=>["2"],
+# "location"=>["Collections/main"],
+# "ownership"=>["true"]
+# }
 #
-#mainxml['list'].first['mcp'].first
-#{"card"=>[{"id"=>["280320"], "name"=>["Intrepid Hero"], "edition"=>["Magic 2013"]}], "count"=>["1"], "location"=>["Collections/main"], "ownership"=>["true"], "special"=>["foil"]}
+# mainxml['list'].first['mcp'].first
+# {
+# "card"=>[
+#   {"id"=>["280320"], "name"=>["Intrepid Hero"], "edition"=>["Magic 2013"]}
+# ],
+# "count"=>["1"],
+# "location"=>["Collections/main"],
+# "ownership"=>["true"],
+# "special"=>["foil"]
+# }
 
 require 'rubygems'
 require 'bundler/setup'
-require "json"
-require "net/http"
-require "uri"
-require "yaml/store"
+require 'json'
+require 'net/http'
+require 'uri'
+require 'yaml/store'
 
 # Returns an object with the file's parsed contents
 def parsexml(xmlfile)
@@ -35,10 +50,11 @@ def parsexml(xmlfile)
   XmlSimple.xml_in(xmlfile)
 end
 
-def hasparm? (parm,cardobj)
+def hasparm?(parm, cardobj)
   if cardobj['special']
-    # Check to see if there are multiple special tags, which will be shown in an array
-    if cardobj['special'].kind_of?(Array)
+    # Check to see if there are multiple special tags, which will be shown in
+    # an array
+    if cardobj['special'].is_a?(Array)
       if cardobj['special'].first.include? parm
         return true
       else
@@ -56,7 +72,7 @@ def hasparm? (parm,cardobj)
   end
 end
 
-def sendtodeckbox? (cardobj)
+def sendtodeckbox?(cardobj)
   if cardobj['special']
     !cardobj['special'].first.include?('loantome')
   else
@@ -64,52 +80,48 @@ def sendtodeckbox? (cardobj)
   end
 end
 
-def sendtodeckedbuilder? (cardobj)
+def sendtodeckedbuilder?(cardobj)
   # Planechase plains are the specific names here - they're included in the
   # regular Deckbox 'Planechase' set, but are not on Gatherer
   !(
-    (cardobj['special'] and cardobj['special'].first.include?('loantome')) or
-    cardobj['card'].first['edition'].first.start_with?('Extras:') or
-    cardobj['card'].first['edition'].first.start_with?('Oversized:') or
-    cardobj['card'].first['name'].first.start_with?('Mirrored Depths') or
-    cardobj['card'].first['name'].first.start_with?('Horizon Boughs') or
-    cardobj['card'].first['name'].first.start_with?('Celestine Reef') or
+    (cardobj['special'] && cardobj['special'].first.include?('loantome')) ||
+    cardobj['card'].first['edition'].first.start_with?('Extras:') ||
+    cardobj['card'].first['edition'].first.start_with?('Oversized:') ||
+    cardobj['card'].first['name'].first.start_with?('Mirrored Depths') ||
+    cardobj['card'].first['name'].first.start_with?('Horizon Boughs') ||
+    cardobj['card'].first['name'].first.start_with?('Celestine Reef') ||
     cardobj['card'].first['name'].first.start_with?('Tember City')
   )
 end
 
-def sendtomtgprice? (cardobj)
-  # Planechase plains are the specific names here - they're included in the
-  # regular Deckbox 'Planechase' set, but are not on Gatherer
-  if cardobj['special'] && cardobj['special'].first.include?('loantome') ||
-  cardobj['card'].first['edition'].first.start_with?('Extras:') ||
-  cardobj['card'].first['edition'].first.start_with?('Oversized:') ||
-  cardobj['card'].first['edition'].first.start_with?('Launch Parties') ||
-  cardobj['card'].first['edition'].first.start_with?('Prerelease Events') ||
-  cardobj['card'].first['edition'].first.start_with?('Modern Event Deck 2014') ||
-  cardobj['card'].first['edition'].first.start_with?('Magic 2015 Clash Pack ') ||
-  cardobj['card'].first['edition'].first.start_with?('Fate Reforged Clash Pack ') ||
-  cardobj['card'].first['edition'].first.start_with?('Magic Origins Clash Pack ') ||
-  cardobj['card'].first['edition'].first.start_with?('Ugin\'s Fate ') ||
-  cardobj['card'].first['name'].first.start_with?('Mirrored Depths') ||
-  cardobj['card'].first['name'].first.start_with?('Horizon Boughs') ||
-  cardobj['card'].first['name'].first.start_with?('Celestine Reef') ||
-  cardobj['card'].first['name'].first.start_with?('Tember City') ||
-  ([
-    'Plains',
-    'Island',
-    'Swamp',
-    'Mountain',
-    'Forest'
-   ].include?(cardobj['card'].first['name'].first) &&
-   !cardobj['card'].first['edition'].first.start_with?('Judge Gift')
-  ) ||
-  # Import can't handle the nested comma here
-  cardobj['card'].first['name'].first.start_with?('Borrowing 100,000 Arrows') ||
-  (cardobj['card'].first['name'].first.start_with?('Fire // Ice') &&
-   cardobj['card'].first['edition'].first.start_with?('Friday Night Magic')) ||
-  (cardobj['card'].first['name'].first.start_with?('Sultai Charm') &&
-   cardobj['card'].first['edition'].first.start_with?('Media Inserts'))
+def sendtomtgprice?(cardobj)
+  name = cardobj['card'].first['name'].first
+  edition = cardobj['card'].first['edition'].first
+  if (cardobj['special'] && cardobj['special'].first.include?('loantome')) ||
+     edition.start_with?('Extras:') ||
+     edition.start_with?('Oversized:') ||
+     edition.start_with?('Launch Parties') ||
+     edition.start_with?('Prerelease Events') ||
+     edition.start_with?('Modern Event Deck 2014') ||
+     edition.start_with?('Magic 2015 Clash Pack ') ||
+     edition.start_with?('Fate Reforged Clash Pack ') ||
+     edition.start_with?('Magic Origins Clash Pack ') ||
+     edition.start_with?('Ugin\'s Fate ') ||
+     # Planechase plains are the specific names here - they're included in the
+     # regular Deckbox 'Planechase' set, but are not on Gatherer
+     name.start_with?('Mirrored Depths') ||
+     name.start_with?('Horizon Boughs') ||
+     name.start_with?('Celestine Reef') ||
+     name.start_with?('Tember City') ||
+     (%w(Plains Island Swamp Mountain Forest).include?(name) &&
+      !edition.start_with?('Judge Gift')
+     ) ||
+     # Import can't handle the nested comma here
+     name.start_with?('Borrowing 100,000 Arrows') ||
+     (name.start_with?('Fire // Ice') &&
+      edition.start_with?('Friday Night Magic')) ||
+     (name.start_with?('Sultai Charm') &&
+      edition.start_with?('Media Inserts'))
 
     return false
   else
@@ -117,9 +129,12 @@ def sendtomtgprice? (cardobj)
   end
 end
 
-def gettradecount (cardobj,tradelistfile,tradecountdefault)
-  require "yaml/store"
+def gettradecount(cardobj, tradelistfile, tradecountdefault)
+  require 'yaml/store'
 
+  name = cardobj['card'].first['name'].first
+  edition = cardobj['card'].first['edition'].first
+  # Return no cards for trade if not overridden below
   tradecount = '0'
   # First, generate a simple tradecount
   if cardobj['count'].first.to_i > tradecountdefault
@@ -128,45 +143,49 @@ def gettradecount (cardobj,tradelistfile,tradecountdefault)
   # Now, if a manual tradelist specified, check it for an override
   if tradelistfile != ''
     store = YAML::Store.new(tradelistfile)
-    if store.transaction { store[cardobj['card'].first['name'].first] }
-      if cardobj['card'].first['edition'].first == (store.transaction { store[cardobj['card'].first['name'].first]['edition'] })
-        if hasparm?('foil',cardobj) == (store.transaction { store[cardobj['card'].first['name'].first]['foil'] })
-          tradecount = store.transaction { store[cardobj['card'].first['name'].first]['trade_count'] }
-        end
-      end
+    if store.transaction { store[name] } &&
+       (edition == (store.transaction { store[name]['edition'] })) &&
+       (hasparm?('foil', cardobj) ==
+        (store.transaction { store[name]['foil'] }))
+      tradecount = store.transaction { store[name]['trade_count'] }
     end
   end
   return tradecount
 end
 
-def mkdecklist (xml,outputdir)
+def mkdecklist(xml, outputdir)
   decklistnames = []
   decklistcount = []
   xml['list'].first['mcp'].each do |card|
-    unless (card['special'] and card['special'].first.include?('loantome')) or card['card'].first['edition'].first.start_with?('Extras:')
-      if decklistnames.include?(card['card'].first['name'].first)
-        decklistcount[decklistnames.index(card['card'].first['name'].first)] += card['count'].first.to_i
-      else
-        decklistnames << card['card'].first['name'].first
-        decklistcount << card['count'].first.to_i
-      end
+    name = card['card'].first['name'].first
+    next if (card['special'] and card['special'].first.include?('loantome')) ||
+            card['card'].first['edition'].first.start_with?('Extras:')
+    if decklistnames.include?(name)
+      decklistcount[decklistnames.index(name)] += card['count'].first.to_i
+    else
+      decklistnames << name
+      decklistcount << card['count'].first.to_i
     end
   end
   sorteddecklist = decklistnames.sort
   decklist = []
   sorteddecklist.each do |card|
-    decklist << {'name'=>card,'count'=>decklistcount[decklistnames.index(card)].to_s}
+    decklist << {
+      'name' => card,
+      'count' => decklistcount[decklistnames.index(card)].to_s
+    }
   end
   File.open("#{outputdir}/main.dec", 'w') do |f|
-    f.puts "// Generated on #{Time.new.to_s}\n"
+    f.puts "// Generated on #{Time.new}\n"
     decklist.each do |card|
       f.puts "#{card['count']} #{card['name']}\n"
     end
   end
 end
 
-def getmultiverseid (cardid,cardname)
-  # This will translate your custom database entries into standard multiverse IDs
+def getmultiverseid(cardid, cardname)
+  # This will translate your custom database entries into
+  # standard multiverse IDs
 
   uri = URI.parse(
     "http://api.mtgapi.com/v1/card/name/#{cardname.gsub(/ /, '%20')}"
@@ -177,7 +196,7 @@ def getmultiverseid (cardid,cardname)
 
   response = http.request(request)
 
-  if response.code == "200"
+  if response.code == '200'
     result = JSON.parse(response.body)
     # Sometimes the api will return a hash like "{"name":"Ponder","id":null}"
     # Check here for null responses and skip to the next id
@@ -200,7 +219,7 @@ def getmultiverseid (cardid,cardname)
   end
 end
 
-def getcollnumber (cardid,cardname)
+def getcollnumber(cardid, cardname)
   # This will find the card collector number for a given card
 
   uri = URI.parse("http://api.mtgapi.com/v2/cards?multiverseid=#{cardid}")
@@ -210,7 +229,7 @@ def getcollnumber (cardid,cardname)
 
   response = http.request(request)
 
-  if response.code == "200"
+  if response.code == '200'
     result = JSON.parse(response.body)
     return result['cards'][0]['number']
   else
@@ -220,7 +239,7 @@ def getcollnumber (cardid,cardname)
   end
 end
 
-def mkcoll2 (xml,outputfile)
+def mkcoll2(xml, outputfile)
   # Using a temporary array of card ids as a way of quickly checking which
   # cards have already been encountered
   cardids = []
@@ -284,18 +303,18 @@ def mkcoll2 (xml,outputfile)
     cards.each do |card|
       f.puts "  - - id: #{card['id']}\n"
       if card['regulars'] > 0
-        f.puts "    - r: #{card['regulars'].to_s}\n"
+        f.puts "    - r: #{card['regulars']}\n"
       end
       if card['foils'] > 0
-        f.puts "    - f: #{card['foils'].to_s}\n"
+        f.puts "    - f: #{card['foils']}\n"
       end
     end
   end
 end
 
-def mkdeckboxinv(cardxml,outputdir,tradelistfile,tradecountdefault)
+def mkdeckboxinv(cardxml, outputdir, tradelistfile, tradecountdefault)
   require 'csv'
-  CSV.open("#{outputdir}/main.csv", "wb") do |csv|
+  CSV.open("#{outputdir}/main.csv", 'wb') do |csv|
     csv << [
       'Count',
       'Tradelist Count',
@@ -316,11 +335,11 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile,tradecountdefault)
     cardxml['list'].first['mcp'].each do |card|
       next unless sendtodeckbox?(card)
       linetoadd = [card['count'].first]
-      linetoadd << gettradecount(card,tradelistfile,tradecountdefault)
+      linetoadd << gettradecount(card, tradelistfile, tradecountdefault)
       cardname = card['card'].first['name'].first
-        .gsub(/ \(.*/, '')
-        .gsub("Æ", 'Ae')
-        .gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
+       .gsub(/ \(.*/, '')
+       .gsub('Æ', 'Ae')
+       .gsub('Lim-Dûl\'s Vault', 'Lim-Dul\'s Vault')
       linetoadd << cardname
       linetoadd << card['card'].first['edition'].first
         .gsub(/2012 Edition/, '2012')
