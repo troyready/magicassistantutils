@@ -221,59 +221,58 @@ def getcollnumber (cardid,cardname)
 end
 
 def mkcoll2 (xml,outputfile)
-  # Using a temporary array of card ideas as a way of quickly checking which
+  # Using a temporary array of card ids as a way of quickly checking which
   # cards have already been encountered
   cardids = []
   cards = []
   xml['list'].first['mcp'].each do |card|
-    if sendtodeckedbuilder?(card)
-      # Custom sets in Magic Assistant start with a -
-      cardid = ''
-      unless card['card'].first['id'].first.start_with?('-')
-        cardid = card['card'].first['id'].first
+    next unless sendtodeckedbuilder?(card)
+    # Custom sets in Magic Assistant start with a -
+    cardid = ''
+    if card['card'].first['id'].first.start_with?('-')
+      # FIXME: adding a manual workaround for broken split card
+      # Once new api is stable should switch to it and refactor
+      if card['card'].first['name'].first == 'Fire // Ice (Fire)'
+        cardid = '27166'
       else
-        # FIXME - adding a manual workaround for broken split card
-        # Once new api is stable should switch to it and refactor
-        if card['card'].first['name'].first == 'Fire // Ice (Fire)'
-          cardid = '27166'
-        else
-          cardid = getmultiverseid(
-            card['card'].first['id'].first,
-            card['card'].first['name'].first
-          )
-        end
+        cardid = getmultiverseid(
+          card['card'].first['id'].first,
+          card['card'].first['name'].first
+        )
       end
-      # Now we've translated IDs where possible; proceed with adding the cards
-      # to the staging array for writing, unless they still have an invalid ID
-      unless cardid.start_with?('-')
-        unless cardids.include?(cardid)
-          # This means that we haven't encountered this multiverse id before
-          # Now that we're adding it to the cards array, note here that
-          # we've encountered it
-          cardids << cardid
-          newcard = {}
-          newcard['id'] = cardid
-          unless card['special'] and card['special'].first.include?('foil')
-            newcard['regulars'] = card['count'].first.to_i
-            newcard['foils'] = 0
-          else
-            newcard['regulars'] = 0
-            newcard['foils'] = card['count'].first.to_i
-          end
-          cards << newcard
+    else
+      cardid = card['card'].first['id'].first
+    end
+    # Now we've translated IDs where possible; proceed with adding the cards
+    # to the staging array for writing, unless they still have an invalid ID
+    if cardid.start_with?('-')
+      puts "Skipping card \"#{card['card'].first['name'].first}\" from "\
+           "\"#{card['card'].first['edition'].first}\" due to its invalid "\
+           "Multiverse ID \"#{cardid}\"."
+    else
+      unless cardids.include?(cardid)
+        # This means that we haven't encountered this multiverse id before
+        # Now that we're adding it to the cards array, note here that
+        # we've encountered it
+        cardids << cardid
+        newcard = {}
+        newcard['id'] = cardid
+        unless card['special'] and card['special'].first.include?('foil')
+          newcard['regulars'] = card['count'].first.to_i
+          newcard['foils'] = 0
         else
-          # We've already encountered this multiverseid at least once, so
-          # increment ownership numbers instead
-          unless card['special'] and card['special'].first.include?('foil')
-            cards[cardids.index(cardid)]['regulars'] += card['count'].first.to_i
-          else
-            cards[cardids.index(cardid)]['foils'] += card['count'].first.to_i
-          end
+          newcard['regulars'] = 0
+          newcard['foils'] = card['count'].first.to_i
         end
+        cards << newcard
       else
-        puts "Skipping card \"#{card['card'].first['name'].first}\" from "\
-             "\"#{card['card'].first['edition'].first}\" due to its invalid "\
-             "Multiverse ID \"#{cardid}\"."
+        # We've already encountered this multiverseid at least once, so
+        # increment ownership numbers instead
+        unless card['special'] and card['special'].first.include?('foil')
+          cards[cardids.index(cardid)]['regulars'] += card['count'].first.to_i
+        else
+          cards[cardids.index(cardid)]['foils'] += card['count'].first.to_i
+        end
       end
     end
   end
@@ -315,203 +314,200 @@ def mkdeckboxinv(cardxml,outputdir,tradelistfile,tradecountdefault)
       'My Price'
     ]
     cardxml['list'].first['mcp'].each do |card|
-      if sendtodeckbox?(card)
-        linetoadd = [card['count'].first]
-        linetoadd << gettradecount(card,tradelistfile,tradecountdefault)
-        cardname = card['card'].first['name'].first
-          .gsub(/ \(.*/, '')
-          .gsub("Æ", 'Ae')
-          .gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
-        linetoadd << cardname
-        linetoadd << card['card'].first['edition'].first
-          .gsub(/2012 Edition/, '2012')
-          .gsub(/2013 Edition/, '2013')
-          .gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
-          .gsub(/Annihilation \(2014\)/, 'Annihilation')
-        # Check to see if the collector number should be added
-        # First check is to see if it's a basic land
-        if (
-          [
-            'Plains',
-            'Island',
-            'Swamp',
-            'Mountain',
-            'Forest'
-          ].include?(card['card'].first['name'].first)
-          ) and !(card['card'].first['id'].first.start_with?('-'))
-          collnumber = getcollnumber(
-            card['card'].first['id'].first,
-            card['card'].first['name'].first
-          )
-          linetoadd << collnumber
-        # Next, if the card is a token (or otherwise from the 'Extras' deckbox
-        # set), map its collectors number to the last two digits of its
-        # multiverse id
-        elsif card['card'].first['edition'].first.start_with?('Extras:')
-          linetoadd << card['card'].first['id'].first
-            .split(//)
-            .last(2)
-            .join("")
-            .to_s
-        else
-          linetoadd << ''
-        end
-        if hasparm?('played',card)
-          linetoadd << 'Played'
-        else
-          linetoadd << 'Near Mint'
-        end
-        # FIXME - Language check?
-        linetoadd << 'English'
-        if hasparm?('foil',card)
-          linetoadd << 'foil'
-        else
-          linetoadd << ''
-        end
-        # FIXME - Signed check
+      next unless sendtodeckbox?(card)
+      linetoadd = [card['count'].first]
+      linetoadd << gettradecount(card,tradelistfile,tradecountdefault)
+      cardname = card['card'].first['name'].first
+        .gsub(/ \(.*/, '')
+        .gsub("Æ", 'Ae')
+        .gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
+      linetoadd << cardname
+      linetoadd << card['card'].first['edition'].first
+        .gsub(/2012 Edition/, '2012')
+        .gsub(/2013 Edition/, '2013')
+        .gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
+        .gsub(/Annihilation \(2014\)/, 'Annihilation')
+      # Check to see if the collector number should be added
+      # First check is to see if it's a basic land
+      if %w(Plains Island Swamp Mountain Forest).include?(
+          card['card'].first['name'].first
+        ) && !(card['card'].first['id'].first.start_with?('-'))
+        collnumber = getcollnumber(
+          card['card'].first['id'].first,
+          card['card'].first['name'].first
+        )
+        linetoadd << collnumber
+      # Next, if the card is a token (or otherwise from the 'Extras' deckbox
+      # set), map its collectors number to the last two digits of its
+      # multiverse id
+      elsif card['card'].first['edition'].first.start_with?('Extras:')
+        linetoadd << card['card'].first['id'].first
+          .split(//)
+          .last(2)
+          .join('')
+          .to_s
+      else
         linetoadd << ''
-        # FIXME - Artist Proof check
-        linetoadd << ''
-        # FIXME - Altered Art check
-        linetoadd << ''
-        # FIXME - Misprint check
-        linetoadd << ''
-        if hasparm?('promo',card)
-          linetoadd << 'promo'
-        else
-          linetoadd << ''
-        end
-        if hasparm?('textless',card)
-          linetoadd << 'textless'
-        else
-          linetoadd << ''
-        end
-        # FIXME - My Price check
-        linetoadd << ''
-        csv << linetoadd
       end
+      if hasparm?('played', card)
+        linetoadd << 'Played'
+      else
+        linetoadd << 'Near Mint'
+      end
+      # FIXME: Language check?
+      linetoadd << 'English'
+      if hasparm?('foil', card)
+        linetoadd << 'foil'
+      else
+        linetoadd << ''
+      end
+      # FIXME: Signed check
+      linetoadd << ''
+      # FIXME: Artist Proof check
+      linetoadd << ''
+      # FIXME: Altered Art check
+      linetoadd << ''
+      # FIXME: Misprint check
+      linetoadd << ''
+      if hasparm?('promo', card)
+        linetoadd << 'promo'
+      else
+        linetoadd << ''
+      end
+      if hasparm?('textless', card)
+        linetoadd << 'textless'
+      else
+        linetoadd << ''
+      end
+      # FIXME: My Price check
+      linetoadd << ''
+      csv << linetoadd
     end
   end
 end
 
-def mk_mtg_price(cardxml,outputdir)
+def mk_mtg_price(cardxml, outputdir)
   require 'csv'
   card_hash = {}
   cardxml['list'].first['mcp'].each do |card|
-    if sendtomtgprice?(card)
-      cardname = card['card'].first['name'].first
-                 .gsub(/ \(.*/, '')
-                 .gsub("Æ", 'Ae')
-                 .gsub("Lim-Dûl's Vault", "Lim-Dul's Vault")
-      edition = card['card'].first['edition'].first
-                .gsub(/Magic Game Day Cards/, 'Game Day')
-                .gsub(/Magic Player Rewards/, 'Player Rewards')
-                .gsub(/WPN\/Gateway/, 'Gateway')
-                .gsub(/Unlimited Edition/, 'Unlimited')
-                .gsub(/Revised Edition/, 'Revised')
-                .gsub(/Fourth Edition/, '4th Edition')
-                .gsub(/Fifth Edition/, '5th Edition')
-                .gsub(/Classic Sixth Edition/, '6th Edition')
-                .gsub(/Seventh Edition/, '7th Edition')
-                .gsub(/Eighth Edition/, '8th Edition')
-                .gsub(/Ninth Edition/, '9th Edition')
-                .gsub(/Tenth Edition/, '10th Edition')
-                .gsub(/Urza's/, 'Urzas')
-                .gsub(/Ravnica: City of Guilds/, 'Ravnica')
-                .gsub(/Time Spiral "Timeshifted"/, 'Timespiral Timeshifted')
-                .gsub(/Planechase 2012 Edition/, 'Planechase 2012')
-                .gsub(/Magic 2010/, 'M10')
-                .gsub(/Magic 2011/, 'M11')
-                .gsub(/Magic 2012/, 'M12')
-                .gsub(/Magic 2013/, 'M13')
-                .gsub(/Magic 2014 Core Set/, 'M14')
-                .gsub(/Magic 2015 Core Set/, 'M15')
-                .gsub(/Dragon's Maze/, 'Dragons Maze')
-                .gsub(/From the Vault:/, 'From the Vault')
-                .gsub(/Commander 2013 Edition/, 'Commander 2013')
-                .gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
-                .gsub(/Annihilation \(2014\)/, 'Annihilation')
-      if [
-        'Akoum',
-        'Aretopolis',
-        'Astral Arena',
-        'Bloodhill Bastion',
-        'Chaotic Aether',
-        'Edge of Malacol',
-        'Furnace Layer',
-        'Gavony',
-        'Glen Elendra',
-        'Grand Ossuary',
-        'Grove of the Dreampods',
-        'Hedron Fields of Agadeem',
-        'Interplanar Tunnel',
-        'Jund',
-        'Kessig',
-        'Kharasha Foothills',
-        'Kilnspire District',
-        'Lair of the Ashen Idol',
-        'Morphic Tide',
-        'Mount Keralia',
-        'Mutual Epiphany',
-        'Nephalia',
-        'Norn\'s Dominion',
-        'Onakke Catacomb',
-        'Orochi Colony',
-        'Orzhova',
-        'Planewide Disaster',
-        'Prahv',
-        'Quicksilver Sea',
-        'Reality Shaping',
-        'Selesnya Loft Gardens',
-        'Spatial Merging',
-        'Stairs to Infinity',
-        'Stensia',
-        'Takenuma',
-        'Talon Gates',
-        'The Zephyr Maze',
-        'Time Distortion',
-        'Trail of the Mage-Rings',
-        'Truga Jungle',
-        'Windriddle Palaces'
-      ].include?(cardname) && edition == 'Planechase 2012'
-        edition = 'Planechase 2012 Planes'
-      end
-      if !(edition.include?('Arena League') ||
-           edition.include?('Duel Decks') ||
-           edition.include?('Friday Night Magic') ||
-           edition.include?('From the Vault') ||
-           edition.include?('Game Day') ||
-           edition.include?('Gateway') ||
-           edition.include?('Grand Prix') ||
-           edition.include?('Judge Gift') ||
-           edition.include?('Media Inserts') ||
-           edition.include?('Player Rewards') ||
-           edition.include?('Prerelease ')) &&
-         hasparm?('foil',card)
-        edition = "#{edition} (Foil)"
-        foil = 'true'
-      else
-        foil = 'false'
-      end
-      if card_hash.has_key?("#{cardname}---#{edition}")
-        card_hash["#{cardname}---#{edition}"]['count'] =
-          (card_hash["#{cardname}---#{edition}"]['count'].to_i +
-          card['count'].first.to_i).to_s
-      else
-        card_hash["#{cardname}---#{edition}"] =
-          {
-            'name' => cardname,
-            'edition'=> edition,
-            'foil'=> foil,
-            'count'=> card['count'].first
-          }
-      end
+    next unless sendtomtgprice?(card)
+    cardname = card['card'].first['name'].first
+               .gsub(/ \(.*/, '')
+               .gsub('Æ', 'Ae')
+               .gsub('Lim-Dûl', 'Lim-Dul')
+    edition = card['card'].first['edition'].first
+              .gsub(/Magic Game Day Cards/, 'Game Day')
+              .gsub(/Magic Player Rewards/, 'Player Rewards')
+              .gsub(/WPN\/Gateway/, 'Gateway')
+              .gsub(/Unlimited Edition/, 'Unlimited')
+              .gsub(/Revised Edition/, 'Revised')
+              .gsub(/Fourth Edition/, '4th Edition')
+              .gsub(/Fifth Edition/, '5th Edition')
+              .gsub(/Classic Sixth Edition/, '6th Edition')
+              .gsub(/Seventh Edition/, '7th Edition')
+              .gsub(/Eighth Edition/, '8th Edition')
+              .gsub(/Ninth Edition/, '9th Edition')
+              .gsub(/Tenth Edition/, '10th Edition')
+              .gsub(/Urza's/, 'Urzas')
+              .gsub(/Ravnica: City of Guilds/, 'Ravnica')
+              .gsub(/Time Spiral "Timeshifted"/, 'Timespiral Timeshifted')
+              .gsub(/Planechase 2012 Edition/, 'Planechase 2012')
+              .gsub(/Magic 2010/, 'M10')
+              .gsub(/Magic 2011/, 'M11')
+              .gsub(/Magic 2012/, 'M12')
+              .gsub(/Magic 2013/, 'M13')
+              .gsub(/Magic 2014 Core Set/, 'M14')
+              .gsub(/Magic 2015 Core Set/, 'M15')
+              .gsub(/Dragon's Maze/, 'Dragons Maze')
+              .gsub(/From the Vault:/, 'From the Vault')
+              .gsub(/Commander 2013 Edition/, 'Commander 2013')
+              .gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
+              .gsub(/Annihilation \(2014\)/, 'Annihilation')
+    if card['card'].first['id'].first == '969'
+      cardname = 'Army of Allah (1)'
+    elsif card['card'].first['id'].first == '970'
+      cardname = 'Army of Allah (2)'
+    end
+    if [
+      'Akoum',
+      'Aretopolis',
+      'Astral Arena',
+      'Bloodhill Bastion',
+      'Chaotic Aether',
+      'Edge of Malacol',
+      'Furnace Layer',
+      'Gavony',
+      'Glen Elendra',
+      'Grand Ossuary',
+      'Grove of the Dreampods',
+      'Hedron Fields of Agadeem',
+      'Interplanar Tunnel',
+      'Jund',
+      'Kessig',
+      'Kharasha Foothills',
+      'Kilnspire District',
+      'Lair of the Ashen Idol',
+      'Morphic Tide',
+      'Mount Keralia',
+      'Mutual Epiphany',
+      'Nephalia',
+      'Norn\'s Dominion',
+      'Onakke Catacomb',
+      'Orochi Colony',
+      'Orzhova',
+      'Planewide Disaster',
+      'Prahv',
+      'Quicksilver Sea',
+      'Reality Shaping',
+      'Selesnya Loft Gardens',
+      'Spatial Merging',
+      'Stairs to Infinity',
+      'Stensia',
+      'Takenuma',
+      'Talon Gates',
+      'The Zephyr Maze',
+      'Time Distortion',
+      'Trail of the Mage-Rings',
+      'Truga Jungle',
+      'Windriddle Palaces'
+    ].include?(cardname) && edition == 'Planechase 2012'
+      edition = 'Planechase 2012 Planes'
+    end
+    if !(edition.include?('Arena League') ||
+         edition.include?('Duel Decks') ||
+         edition.include?('Friday Night Magic') ||
+         edition.include?('From the Vault') ||
+         edition.include?('Game Day') ||
+         edition.include?('Gateway') ||
+         edition.include?('Grand Prix') ||
+         edition.include?('Judge Gift') ||
+         edition.include?('Media Inserts') ||
+         edition.include?('Player Rewards') ||
+         edition.include?('Prerelease ')) &&
+       hasparm?('foil', card)
+      edition = "#{edition} (Foil)"
+      foil = 'true'
+    else
+      foil = 'false'
+    end
+    if card_hash.key?("#{cardname}---#{edition}")
+      card_hash["#{cardname}---#{edition}"]['count'] =
+        (card_hash["#{cardname}---#{edition}"]['count'].to_i +
+        card['count'].first.to_i).to_s
+    else
+      card_hash["#{cardname}---#{edition}"] =
+        {
+          'name' => cardname,
+          'edition' => edition,
+          'foil' => foil,
+          'count' => card['count'].first
+        }
     end
   end
 
-  CSV.open("#{outputdir}/mtgprice_coll.csv", "wb") do |csv|
-    card_hash.sort.map do |k,v|
-      csv << [v['count'],"#{v['name']}FORCE_COMMAS,",v['edition'],v['foil']]
+  CSV.open("#{outputdir}/mtgprice_coll.csv", 'wb') do |csv|
+    card_hash.sort.map do |_k, v|
+      csv << [v['count'], "#{v['name']}FORCE_COMMAS,", v['edition'], v['foil']]
     end
   end
   IO.write(
@@ -523,8 +519,7 @@ def mk_mtg_price(cardxml,outputdir)
   )
 end
 
-
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
 
   require 'optparse'
   require 'pathname'
@@ -537,18 +532,18 @@ if __FILE__ == $0
   optparse = OptionParser.new do|opts|
     # TODO: Put command-line options here
 
-    options[:inputfile] = ""
-    opts.on( '-i', '--input FILE', "Input XML file" ) do |f|
+    options[:inputfile] = ''
+    opts.on('-i', '--input FILE', 'Input XML file') do |f|
       options[:inputfile] = f
     end
 
-    options[:outputdir] = ""
-    opts.on( '-o', '--output DIR', "Output directory" ) do |f|
+    options[:outputdir] = ''
+    opts.on('-o', '--output DIR', 'Output directory') do |f|
       options[:outputdir] = f
     end
 
     options[:deckedoutfile] = false
-    opts.on( '-d', '--deckedbuilder FILE', "Decked Builder output file" ) do |f|
+    opts.on('-d', '--deckedbuilder FILE', 'Decked Builder output file') do |f|
       options[:deckedoutfile] = f
     end
 
@@ -562,18 +557,22 @@ if __FILE__ == $0
     # Giant Growth:
     # (etc)
     options[:tradelistfile] = ''
-    opts.on( '-t', '--tradelist FILE', "Manual tradelist file" ) do |f|
+    opts.on('-t', '--tradelist FILE', 'Manual tradelist file') do |f|
       options[:tradelistfile] = f
     end
 
     options[:tradecountdefault] = 4
-    opts.on( '-T', '--tradecountdefault N', "Cards above this number will be considered trade-able; defaults to 4" ) do |f|
+    opts.on(
+      '-T',
+      '--tradecountdefault N',
+      'Cards above this number will be considered trade-able; defaults to 4'
+    ) do |f|
       options[:tradecountdefault] = f.to_i
     end
 
     # This displays the help screen, all programs are
     # assumed to have this option.
-    opts.on( '-h', '--help', 'Display this screen' ) do
+    opts.on('-h', '--help', 'Display this screen') do
       puts opts
       exit
     end
@@ -581,12 +580,12 @@ if __FILE__ == $0
 
   optparse.parse!
 
-  if options[:inputfile] == nil
+  if options[:inputfile].nil?
     print 'Enter input XML file: '
     options[:inputfile] = gets.chomp
   end
 
-  if options[:outputdir] == nil
+  if options[:outputdir].nil?
     print 'Enter output directory for files: '
     options[:outputdir] = Pathname(gets.chomp).cleanpath.to_s
   end
@@ -598,13 +597,16 @@ if __FILE__ == $0
   # Option set; start the processing
   mainxml = parsexml(options[:inputfile])
 
-  mkdecklist(mainxml,options[:outputdir])
+  mkdecklist(mainxml, options[:outputdir])
 
-  if options[:deckedoutfile]
-    mkcoll2(mainxml,options[:deckedoutfile])
-  end
+  mkcoll2(mainxml, options[:deckedoutfile]) if options[:deckedoutfile]
 
-  mkdeckboxinv(mainxml,options[:outputdir],options[:tradelistfile],options[:tradecountdefault])
+  mkdeckboxinv(
+    mainxml,
+    options[:outputdir],
+    options[:tradelistfile],
+    options[:tradecountdefault]
+  )
 
-  mk_mtg_price(mainxml,options[:outputdir])
+  mk_mtg_price(mainxml, options[:outputdir])
 end
