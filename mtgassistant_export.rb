@@ -130,27 +130,23 @@ def sendtomtgprice?(cardobj)
 end
 
 def gettradecount(cardobj, tradelistfile, tradecountdefault)
-  require 'yaml/store'
-
   name = cardobj['card'].first['name'].first
   edition = cardobj['card'].first['edition'].first
   # Return no cards for trade if not overridden below
-  tradecount = '0'
-  # First, generate a simple tradecount
-  if cardobj['count'].first.to_i > tradecountdefault
-    tradecount = (cardobj['count'].first.to_i - tradecountdefault).to_s
-  end
-  # Now, if a manual tradelist specified, check it for an override
-  if tradelistfile != ''
+  if (cardobj['count'].first.to_i < tradecountdefault) &&
+     tradelistfile == ''
+    return '0'
+  elsif tradelistfile != ''
+    require 'yaml/store'
     store = YAML::Store.new(tradelistfile)
     if store.transaction { store[name] } &&
        (edition == (store.transaction { store[name]['edition'] })) &&
        (hasparm?('foil', cardobj) ==
-        (store.transaction { store[name]['foil'] }))
-      tradecount = store.transaction { store[name]['trade_count'] }
+       (store.transaction { store[name]['foil'] }))
+      return store.transaction { store[name]['trade_count'] }
     end
   end
-  return tradecount
+  (cardobj['count'].first.to_i - tradecountdefault).to_s
 end
 
 def mkdecklist(xml, outputdir)
@@ -158,7 +154,7 @@ def mkdecklist(xml, outputdir)
   decklistcount = []
   xml['list'].first['mcp'].each do |card|
     name = card['card'].first['name'].first
-    next if (card['special'] and card['special'].first.include?('loantome')) ||
+    next if (card['special'] && card['special'].first.include?('loantome')) ||
             card['card'].first['edition'].first.start_with?('Extras:')
     if decklistnames.include?(name)
       decklistcount[decklistnames.index(name)] += card['count'].first.to_i
@@ -269,29 +265,29 @@ def mkcoll2(xml, outputfile)
            "\"#{card['card'].first['edition'].first}\" due to its invalid "\
            "Multiverse ID \"#{cardid}\"."
     else
-      unless cardids.include?(cardid)
+      if cardids.include?(cardid)
+        # We've already encountered this multiverseid at least once, so
+        # increment ownership numbers instead
+        if card['special'] && card['special'].first.include?('foil')
+          cards[cardids.index(cardid)]['foils'] += card['count'].first.to_i
+        else
+          cards[cardids.index(cardid)]['regulars'] += card['count'].first.to_i
+        end
+      else
         # This means that we haven't encountered this multiverse id before
         # Now that we're adding it to the cards array, note here that
         # we've encountered it
         cardids << cardid
         newcard = {}
         newcard['id'] = cardid
-        unless card['special'] and card['special'].first.include?('foil')
-          newcard['regulars'] = card['count'].first.to_i
-          newcard['foils'] = 0
-        else
+        if card['special'] && card['special'].first.include?('foil')
           newcard['regulars'] = 0
           newcard['foils'] = card['count'].first.to_i
+        else
+          newcard['regulars'] = card['count'].first.to_i
+          newcard['foils'] = 0
         end
         cards << newcard
-      else
-        # We've already encountered this multiverseid at least once, so
-        # increment ownership numbers instead
-        unless card['special'] and card['special'].first.include?('foil')
-          cards[cardids.index(cardid)]['regulars'] += card['count'].first.to_i
-        else
-          cards[cardids.index(cardid)]['foils'] += card['count'].first.to_i
-        end
       end
     end
   end
@@ -302,12 +298,8 @@ def mkcoll2(xml, outputfile)
     f.puts "- items:\n"
     cards.each do |card|
       f.puts "  - - id: #{card['id']}\n"
-      if card['regulars'] > 0
-        f.puts "    - r: #{card['regulars']}\n"
-      end
-      if card['foils'] > 0
-        f.puts "    - f: #{card['foils']}\n"
-      end
+      f.puts "    - r: #{card['regulars']}\n" if card['regulars'] > 0
+      f.puts "    - f: #{card['foils']}\n" if card['foils'] > 0
     end
   end
 end
@@ -337,9 +329,9 @@ def mkdeckboxinv(cardxml, outputdir, tradelistfile, tradecountdefault)
       linetoadd = [card['count'].first]
       linetoadd << gettradecount(card, tradelistfile, tradecountdefault)
       cardname = card['card'].first['name'].first
-       .gsub(/ \(.*/, '')
-       .gsub('Æ', 'Ae')
-       .gsub('Lim-Dûl\'s Vault', 'Lim-Dul\'s Vault')
+                 .gsub(/ \(.*/, '')
+                 .gsub('Æ', 'Ae')
+                 .gsub('Lim-Dûl\'s Vault', 'Lim-Dul\'s Vault')
       linetoadd << cardname
       linetoadd << card['card'].first['edition'].first
         .gsub(/2012 Edition/, '2012')
