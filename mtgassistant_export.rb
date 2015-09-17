@@ -113,9 +113,6 @@ def sendtomtgprice?(cardobj)
      name.start_with?('Horizon Boughs') ||
      name.start_with?('Celestine Reef') ||
      name.start_with?('Tember City') ||
-     (%w(Plains Island Swamp Mountain Forest).include?(name) &&
-      !edition.start_with?('Judge Gift')
-     ) ||
      # Import can't handle the nested comma here
      name.start_with?('Borrowing 100,000 Arrows') ||
      (name.start_with?('Fire // Ice') &&
@@ -341,8 +338,8 @@ def mkdeckboxinv(cardxml, outputdir, tradelistfile, tradecountdefault)
       # Check to see if the collector number should be added
       # First check is to see if it's a basic land
       if %w(Plains Island Swamp Mountain Forest).include?(
-          card['card'].first['name'].first
-        ) && !(card['card'].first['id'].first.start_with?('-'))
+        card['card'].first['name'].first
+      ) && !(card['card'].first['id'].first.start_with?('-'))
         collnumber = getcollnumber(
           card['card'].first['id'].first,
           card['card'].first['name'].first
@@ -402,14 +399,33 @@ def mk_mtg_price(cardxml, outputdir)
   card_hash = {}
   cardxml['list'].first['mcp'].each do |card|
     next unless sendtomtgprice?(card)
-    cardname = card['card'].first['name'].first
-               .gsub(/ \(.*/, '')
-               .gsub('Æ', 'Ae')
-               .gsub('Lim-Dûl', 'Lim-Dul')
+    cardname = case card['card'].first['id'].first
+               when '969'
+                 'Army of Allah (1)'
+               when '970'
+                 'Army of Allah (2)'
+               when '129606'
+                 'Island (1)'
+               when '129607'
+                 'Island (2)'
+               when '129608'
+                 'Island (3)'
+               when '129754'
+                 'Swamp (1)'
+               when '129755'
+                 'Swamp (2)'
+               when '129756'
+                 'Swamp (3)'
+               else
+                 card['card'].first['name'].first
+                 .gsub(/ \(.*/, '')
+                 .gsub('Æ', 'Ae')
+                 .gsub('Lim-Dûl', 'Lim-Dul')
+               end
     edition = card['card'].first['edition'].first
               .gsub(/Magic Game Day Cards/, 'Game Day')
               .gsub(/Magic Player Rewards/, 'Player Rewards')
-              .gsub(/WPN\/Gateway/, 'Gateway')
+              .gsub(%r{WPN/Gateway}, 'Gateway')
               .gsub(/Unlimited Edition/, 'Unlimited')
               .gsub(/Revised Edition/, 'Revised')
               .gsub(/Fourth Edition/, '4th Edition')
@@ -523,8 +539,7 @@ def mk_mtg_price(cardxml, outputdir)
   end
   IO.write(
     "#{outputdir}/mtgprice_coll.csv",
-    File.open("#{outputdir}/mtgprice_coll.csv"
-  ) do |f|
+    File.open("#{outputdir}/mtgprice_coll.csv") do |f|
       f.read.gsub(/FORCE_COMMAS,/, '')
     end
   )
