@@ -118,8 +118,10 @@ def sendtomtgprice?(cardobj)
      (name.start_with?('Fire // Ice') &&
       edition.start_with?('Friday Night Magic')) ||
      (name.start_with?('Sultai Charm') &&
-      edition.start_with?('Media Inserts'))
-
+      edition.start_with?('Media Inserts')) ||
+     [
+       '244322' # M12 Forest
+     ].include?(cardobj['card'].first['id'].first)
     return false
   else
     return true
@@ -404,18 +406,62 @@ def mk_mtg_price(cardxml, outputdir)
                  'Army of Allah (1)'
                when '970'
                  'Army of Allah (2)'
-               when '129606'
+               when '1850' # Fallen Empires
+                 'Hymn to Tourach (1)'
+               when '129606' # 10th edition
                  'Island (1)'
-               when '129607'
+               when '129607' # 10th edition
                  'Island (2)'
-               when '129608'
+               when '129608' # 10th edition
                  'Island (3)'
-               when '129754'
+               when '129754' # 10th edition
                  'Swamp (1)'
-               when '129755'
+               when '129755' # 10th edition
                  'Swamp (2)'
-               when '129756'
+               when '129756' # 10th edition
                  'Swamp (3)'
+               when '269634' # AVR
+                 'Plains (2)'
+               when '269627' # AVR
+                 'Swamp (2)'
+               when '269636' # AVR
+                 'Forest (1)'
+               when '269635' # AVR
+                 'Forest (2)'
+               when '269629' # AVR
+                 'Forest (3)'
+               when '249733' # M13
+                 'Plains (1)'
+               when '249731' # M13
+                 'Plains (3)'
+               when '249734' # M13
+                 'Plains (4)'
+               when '249726' # M13
+                 'Island (1)'
+               when '249725' # M13
+                 'Island (2)'
+               when '249723' # M13
+                 'Island (3)'
+               when '249724' # M13
+                 'Island (4)'
+               when '249739' # M13
+                 'Swamp (1)'
+               when '249740' # M13
+                 'Swamp (2)'
+               when '249738' # M13
+                 'Swamp (3)'
+               when '249737' # M13
+                 'Swamp (4)'
+               when '249727' # M13
+                 'Mountain (4)'
+               when '249718' # M13
+                 'Forest (1)'
+               when '249719' # M13
+                 'Forest (2)'
+               when '249720' # M13
+                 'Forest (3)'
+               when '249721' # M13
+                 'Forest (4)'
                else
                  card['card'].first['name'].first
                  .gsub(/ \(.*/, '')
@@ -450,11 +496,6 @@ def mk_mtg_price(cardxml, outputdir)
               .gsub(/Commander 2013 Edition/, 'Commander 2013')
               .gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
               .gsub(/Annihilation \(2014\)/, 'Annihilation')
-    if card['card'].first['id'].first == '969'
-      cardname = 'Army of Allah (1)'
-    elsif card['card'].first['id'].first == '970'
-      cardname = 'Army of Allah (2)'
-    end
     if [
       'Akoum',
       'Aretopolis',
