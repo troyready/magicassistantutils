@@ -176,6 +176,11 @@ def mkdecklist(xml, outputdir)
       f.puts "#{card['count']} #{card['name']}\n"
     end
   end
+  File.open("#{outputdir}/main_no_split_suffixes.dec", 'w') do |f|
+    decklist.each do |card|
+      f.puts "#{card['count']} #{card['name'].gsub(/ \(['a-zA-Z]*\)$/, '')}\n"
+    end
+  end
 end
 
 def getmultiverseid(cardid, cardname)
