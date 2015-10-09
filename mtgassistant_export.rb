@@ -176,8 +176,13 @@ def mkdecklist(xml, outputdir)
       f.puts "#{card['count']} #{card['name']}\n"
     end
   end
-  File.open("#{outputdir}/main_no_split_suffixes.dec", 'w') do |f|
+  File.open("#{outputdir}/main_mtgshoebox.dec", 'w') do |f|
     decklist.each do |card|
+      next if ['Celestine Reef',
+               'Horizon Boughs',
+               'Mirrored Depths',
+               'Tember City'
+              ].include?(card['name'])
       f.puts "#{card['count']} #{card['name'].gsub(/ \(['a-zA-Z]*\)$/, '')}\n"
     end
   end
