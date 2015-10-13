@@ -430,6 +430,8 @@ def mk_mtg_price(cardxml, outputdir)
                  'Swamp (2)'
                when '129756' # 10th edition
                  'Swamp (3)'
+               when '220367' # MBS
+                 'Swamp (1)'
                when '269634' # AVR
                  'Plains (2)'
                when '269627' # AVR
@@ -472,6 +474,56 @@ def mk_mtg_price(cardxml, outputdir)
                  'Forest (3)'
                when '249721' # M13
                  'Forest (4)'
+               when '289310' # RTR
+                 'Plains (1)'
+               when '289311' # RTR
+                 'Plains (2)'
+               when '289309' # RTR
+                 'Plains (3)'
+               when '289312' # RTR
+                 'Plains (4)'
+               when '333721' # RTR
+                 'Plains (5)'
+               when '289316' # RTR
+                 'Island (1)'
+               when '289315' # RTR
+                 'Island (2)'
+               when '289313' # RTR
+                 'Island (3)'
+               when '289314' # RTR
+                 'Island (4)'
+               when '333719' # RTR
+                 'Island (5)'
+               when '289317' # RTR
+                 'Swamp (1)'
+               when '289320' # RTR
+                 'Swamp (2)'
+               when '289318' # RTR
+                 'Swamp (3)'
+               when '289319' # RTR
+                 'Swamp (4)'
+               when '333722' # RTR
+                 'Swamp (5)'
+               when '289321' # RTR
+                 'Mountain (1)'
+               when '289324' # RTR
+                 'Mountain (2)'
+               when '289322' # RTR
+                 'Mountain (3)'
+               when '289323' # RTR
+                 'Mountain (4)'
+               when '333720' # RTR
+                 'Mountain (5)'
+               when '289325' # RTR
+                 'Forest (1)'
+               when '289326' # RTR
+                 'Forest (2)'
+               when '289328' # RTR
+                 'Forest (3)'
+               when '289327' # RTR
+                 'Forest (4)'
+               when '333718' # RTR
+                 'Forest (5)'
                else
                  card['card'].first['name'].first
                  .gsub(/ \(.*/, '')
