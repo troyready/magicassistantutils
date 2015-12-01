@@ -44,6 +44,8 @@ require 'net/http'
 require 'uri'
 require 'yaml/store'
 
+require_relative 'reserved_list'
+
 # Returns an object with the file's parsed contents
 def parsexml(xmlfile)
   require 'xmlsimple'
@@ -402,6 +404,39 @@ def mkdeckboxinv(cardxml, outputdir, tradelistfile, tradecountdefault)
       # FIXME: My Price check
       linetoadd << ''
       csv << linetoadd
+    end
+  end
+end
+
+def mk_db_wishlist(cardxml, outputdir)
+  require 'csv'
+  CSV.open("#{outputdir}/wishlist.csv", 'wb') do |csv|
+    csv << [
+      'Count',
+      'Name',
+      'Edition',
+      'Card Number',
+      'Condition',
+      'Language',
+      'Foil',
+      'Signed',
+      'Artist Proof',
+      'Altered Art',
+      'Misprint',
+      'Promo',
+      'Textless'
+    ]
+    @reserved_list.each do |card|
+      card_count = @only_restricted.include?(card) ? 1 : 4
+      cardxml['list'].first['mcp'].each do |inv_card|
+        next if !sendtodeckbox?(inv_card) ||
+                card != inv_card['card'].first['name'].first
+        card_count -= inv_card['count'].first
+      end
+      next unless card_count > 0
+      card_to_add = [card_count, card, '']
+      10.times {card_to_add << nil}
+      csv << card_to_add
     end
   end
 end
