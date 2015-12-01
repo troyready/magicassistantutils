@@ -34,7 +34,7 @@
   'Al-abara\'s Carpet',
   'Alchor\'s Tomb',
   'Ali from Cairo',
-  'All Hallo\'s Eve',
+  'All Hallow\'s Eve',
   'Altar of Bone',
   'Aluren',
   'Amulet of Quoz',

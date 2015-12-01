@@ -147,7 +147,12 @@ def gettradecount(cardobj, tradelistfile, tradecountdefault)
       return store.transaction { store[name]['trade_count'] }
     end
   end
-  (cardobj['count'].first.to_i - tradecountdefault).to_s
+  case (cardobj['count'].first.to_i - tradecountdefault) > 0
+  when true
+    (cardobj['count'].first.to_i - tradecountdefault).to_s
+  else
+    0.to_s
+  end
 end
 
 def mkdecklist(xml, outputdir)
@@ -431,11 +436,11 @@ def mk_db_wishlist(cardxml, outputdir)
       cardxml['list'].first['mcp'].each do |inv_card|
         next if !sendtodeckbox?(inv_card) ||
                 card != inv_card['card'].first['name'].first
-        card_count -= inv_card['count'].first
+        card_count -= inv_card['count'].first.to_i
       end
       next unless card_count > 0
       card_to_add = [card_count, card, '']
-      10.times {card_to_add << nil}
+      10.times {card_to_add << nil} # matches their file's number of commas
       csv << card_to_add
     end
   end
@@ -771,6 +776,8 @@ if __FILE__ == $PROGRAM_NAME
     options[:tradelistfile],
     options[:tradecountdefault]
   )
+
+  mk_db_wishlist(mainxml, options[:outputdir])
 
   mk_mtg_price(mainxml, options[:outputdir])
 end
