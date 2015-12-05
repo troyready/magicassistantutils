@@ -472,6 +472,26 @@ def mk_mtg_price(cardxml, outputdir)
                  'Swamp (3)'
                when '220367' # MBS
                  'Swamp (1)'
+               when '284497' # DDI (Venser vs Koth)
+                 'Plains (1)'
+               when '284499' # DDI (Venser vs Koth)
+                 'Plains (2)'
+               when '284498' # DDI (Venser vs Koth)
+                 'Plains (3)'
+               when '284491' # DDI (Venser vs Koth)
+                 'Island (1)'
+               when '284490' # DDI (Venser vs Koth)
+                 'Island (2)'
+               when '284492' # DDI (Venser vs Koth)
+                 'Island (3)'
+               when '284493' # DDI (Venser vs Koth)
+                 'Mountain (3)'
+               when '284494' # DDI (Venser vs Koth)
+                 'Mountain (1)'
+               when '284495' # DDI (Venser vs Koth)
+                 'Mountain (4)'
+               when '284496' # DDI (Venser vs Koth)
+                 'Mountain (2)'
                when '269634' # AVR
                  'Plains (2)'
                when '269627' # AVR
@@ -513,6 +533,14 @@ def mk_mtg_price(cardxml, outputdir)
                when '249720' # M13
                  'Forest (3)'
                when '249721' # M13
+                 'Forest (4)'
+               when '292943' # DDJ (Izzet vs Golgari)
+                 'Forest (1)'
+               when '292945' # DDJ (Izzet vs Golgari)
+                 'Forest (2)'
+               when '292944' # DDJ (Izzet vs Golgari)
+                 'Forest (3)'
+               when '292946' # DDJ (Izzet vs Golgari)
                  'Forest (4)'
                when '289310' # RTR
                  'Plains (1)'
