@@ -102,12 +102,7 @@ def sendtomtgprice?(cardobj)
   if (cardobj['special'] && cardobj['special'].first.include?('loantome')) ||
      edition.start_with?('Extras:') ||
      edition.start_with?('Oversized:') ||
-     edition.start_with?('Launch Parties') ||
-     edition.start_with?('Prerelease Events') ||
      edition.start_with?('Modern Event Deck 2014') ||
-     edition.start_with?('Magic 2015 Clash Pack ') ||
-     edition.start_with?('Fate Reforged Clash Pack ') ||
-     edition.start_with?('Magic Origins Clash Pack ') ||
      edition.start_with?('Ugin\'s Fate ') ||
      # Planechase plains are the specific names here - they're included in the
      # regular Deckbox 'Planechase' set, but are not on Gatherer
@@ -117,12 +112,35 @@ def sendtomtgprice?(cardobj)
      name.start_with?('Tember City') ||
      # Import can't handle the nested comma here
      name.start_with?('Borrowing 100,000 Arrows') ||
-     (name.start_with?('Fire // Ice') &&
-      edition.start_with?('Friday Night Magic')) ||
-     (name.start_with?('Sultai Charm') &&
-      edition.start_with?('Media Inserts')) ||
      [
-       '244322' # M12 Forest
+       '244322', # M12 Forest
+       '368473', # DDK (Sorin vs Tibalt) Plains
+       '368480', # DDK (Sorin vs Tibalt) Plains
+       '368508', # DDK (Sorin vs Tibalt) Plains
+       '368482', # DDK (Sorin vs Tibalt) Swamp
+       '368484', # DDK (Sorin vs Tibalt) Swamp
+       '368494', # DDK (Sorin vs Tibalt) Swamp
+       '368497', # DDK (Sorin vs Tibalt) Swamp
+       '368538', # DDK (Sorin vs Tibalt) Swamp
+       '368500', # DDK (Sorin vs Tibalt) Mountain
+       '368502', # DDK (Sorin vs Tibalt) Mountain
+       '368512', # DDK (Sorin vs Tibalt) Mountain
+       '373369', # DDL (Heroes vs Monsters) Plains
+       '373386', # DDL (Heroes vs Monsters) Plains
+       '373361', # DDL (Heroes vs Monsters) Plains
+       '373341', # DDL (Heroes vs Monsters) Plains
+       '373387', # DDL (Heroes vs Monsters) Mountain
+       '373346', # DDL (Heroes vs Monsters) Mountain
+       '373411', # DDL (Heroes vs Monsters) Mountain
+       '373382', # DDL (Heroes vs Monsters) Mountain
+       '373392', # DDL (Heroes vs Monsters) Mountain
+       '373359', # DDL (Heroes vs Monsters) Mountain
+       '373403', # DDL (Heroes vs Monsters) Mountain
+       '373378', # DDL (Heroes vs Monsters) Mountain
+       '373374', # DDL (Heroes vs Monsters) Forest
+       '373375', # DDL (Heroes vs Monsters) Forest
+       '373349', # DDL (Heroes vs Monsters) Forest
+       '373404' # DDL (Heroes vs Monsters) Forest
      ].include?(cardobj['card'].first['id'].first)
     return false
   else
@@ -472,6 +490,24 @@ def mk_mtg_price(cardxml, outputdir)
                  'Swamp (3)'
                when '220367' # MBS
                  'Swamp (1)'
+               when '249376' # DDH (Ajani vs Nicol Bolas)
+                 'Plains'
+               when '259287' # DDH (Ajani vs Nicol Bolas)
+                 'Island'
+               when '259283' # DDH (Ajani vs Nicol Bolas)
+                 'Swamp (1)'
+               when '262652' # DDH (Ajani vs Nicol Bolas)
+                 'Swamp (2)'
+               when '259286' # DDH (Ajani vs Nicol Bolas)
+                 'Mountain (1)'
+               when '259284' # DDH (Ajani vs Nicol Bolas)
+                 'Mountain (2)'
+               when '262651' # DDH (Ajani vs Nicol Bolas)
+                 'Forest (1)'
+               when '259285' # DDH (Ajani vs Nicol Bolas)
+                 'Forest (2)'
+               when '245241' # INN (Innistrad)
+                 'Swamp (3)'
                when '284497' # DDI (Venser vs Koth)
                  'Plains (1)'
                when '284499' # DDI (Venser vs Koth)
@@ -502,6 +538,16 @@ def mk_mtg_price(cardxml, outputdir)
                  'Forest (2)'
                when '269629' # AVR
                  'Forest (3)'
+               when '276465' # PC2 (Planechase 2012)
+                 'Mountain (1)'
+               when '276449' # PC2 (Planechase 2012)
+                 'Mountain (3)'
+               when '276470' # PC2 (Planechase 2012)
+                 'Mountain (4)'
+               when '276454' # PC2 (Planechase 2012)
+                 'Forest (3)'
+               when '276460' # PC2 (Planechase 2012)
+                 'Forest (4)'
                when '249733' # M13
                  'Plains (1)'
                when '249731' # M13
@@ -542,6 +588,30 @@ def mk_mtg_price(cardxml, outputdir)
                  'Forest (3)'
                when '292946' # DDJ (Izzet vs Golgari)
                  'Forest (4)'
+               when '292962' # DDJ (Izzet vs Golgari)
+                 'Swamp (1)'
+               when '292961' # DDJ (Izzet vs Golgari)
+                 'Swamp (2)'
+               when '292960' # DDJ (Izzet vs Golgari)
+                 'Swamp (3)'
+               when '292963' # DDJ (Izzet vs Golgari)
+                 'Swamp (4)'
+               when '292767' # DDJ (Izzet vs Golgari)
+                 'Mountain (1)'
+               when '292769' # DDJ (Izzet vs Golgari)
+                 'Mountain (2)'
+               when '292768' # DDJ (Izzet vs Golgari)
+                 'Mountain (3)'
+               when '292770' # DDJ (Izzet vs Golgari)
+                 'Mountain (4)'
+               when '292764' # DDJ (Izzet vs Golgari)
+                 'Island (1)'
+               when '292765' # DDJ (Izzet vs Golgari)
+                 'Island (2)'
+               when '292763' # DDJ (Izzet vs Golgari)
+                 'Island (3)'
+               when '292766' # DDJ (Izzet vs Golgari)
+                 'Island (4)'
                when '289310' # RTR
                  'Plains (1)'
                when '289311' # RTR
@@ -599,6 +669,7 @@ def mk_mtg_price(cardxml, outputdir)
                  .gsub('Lim-Dûl', 'Lim-Dul')
                end
     edition = card['card'].first['edition'].first
+              .gsub(/.*Clash Pack Promos/, 'Clash Packs')
               .gsub(/Magic Game Day Cards/, 'Game Day')
               .gsub(/Magic Player Rewards/, 'Player Rewards')
               .gsub(%r{WPN/Gateway}, 'Gateway')
