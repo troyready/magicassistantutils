@@ -140,7 +140,8 @@ def sendtomtgprice?(cardobj)
        '373374', # DDL (Heroes vs Monsters) Forest
        '373375', # DDL (Heroes vs Monsters) Forest
        '373349', # DDL (Heroes vs Monsters) Forest
-       '373404' # DDL (Heroes vs Monsters) Forest
+       '373404', # DDL (Heroes vs Monsters) Forest
+       '376419' # C13 (Commander 2013) Mountain
      ].include?(cardobj['card'].first['id'].first)
     return false
   else
@@ -538,16 +539,56 @@ def mk_mtg_price(cardxml, outputdir)
                  'Forest (2)'
                when '269629' # AVR
                  'Forest (3)'
+               when '276461' # PC2 (Planechase 2012)
+                 'Plains (1)'
+               when '276469' # PC2 (Planechase 2012)
+                 'Plains (2)'
+               when '276473' # PC2 (Planechase 2012)
+                 'Plains (3)'
+               when '276459' # PC2 (Planechase 2012)
+                 'Plains (4)'
+               when '276458' # PC2 (Planechase 2012)
+                 'Plains (5)'
+               when '276462' # PC2 (Planechase 2012)
+                 'Island (1)'
+               when '276453' # PC2 (Planechase 2012)
+                 'Island (2)'
+               when '276466' # PC2 (Planechase 2012)
+                 'Island (3)'
+               when '276471' # PC2 (Planechase 2012)
+                 'Island (4)'
+               when '276452' # PC2 (Planechase 2012)
+                 'Island (5)'
+               when '276455' # PC2 (Planechase 2012)
+                 'Swamp (1)'
+               when '276472' # PC2 (Planechase 2012)
+                 'Swamp (2)'
+               when '276457' # PC2 (Planechase 2012)
+                 'Swamp (3)'
+               when '276448' # PC2 (Planechase 2012)
+                 'Swamp (4)'
+               when '276463' # PC2 (Planechase 2012)
+                 'Swamp (5)'
                when '276465' # PC2 (Planechase 2012)
                  'Mountain (1)'
+               when '276447' # PC2 (Planechase 2012)
+                 'Mountain (2)'
                when '276449' # PC2 (Planechase 2012)
                  'Mountain (3)'
                when '276470' # PC2 (Planechase 2012)
                  'Mountain (4)'
+               when '276464' # PC2 (Planechase 2012)
+                 'Forest (1)'
+               when '276456' # PC2 (Planechase 2012)
+                 'Forest (2)'
                when '276454' # PC2 (Planechase 2012)
                  'Forest (3)'
                when '276460' # PC2 (Planechase 2012)
                  'Forest (4)'
+               when '276468' # PC2 (Planechase 2012)
+                 'Forest (5)'
+               when '276467' # PC2 (Planechase 2012)
+                 'Forest (6)'
                when '249733' # M13
                  'Plains (1)'
                when '249731' # M13
@@ -662,6 +703,8 @@ def mk_mtg_price(cardxml, outputdir)
                  'Forest (4)'
                when '333718' # RTR
                  'Forest (5)'
+               when '370591' # M14
+                 'Mountain (3)'
                else
                  card['card'].first['name'].first
                  .gsub(/ \(.*/, '')
