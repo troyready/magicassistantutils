@@ -141,7 +141,29 @@ def sendtomtgprice?(cardobj)
        '373375', # DDL (Heroes vs Monsters) Forest
        '373349', # DDL (Heroes vs Monsters) Forest
        '373404', # DDL (Heroes vs Monsters) Forest
-       '376419' # C13 (Commander 2013) Mountain
+       '380217', # DDM (Jace vs Vraska) Island
+       '380223', # DDM (Jace vs Vraska) Island
+       '380222', # DDM (Jace vs Vraska) Island
+       '380194', # DDM (Jace vs Vraska) Island
+       '380261', # DDM (Jace vs Vraska) Island
+       '380239', # DDM (Jace vs Vraska) Swamp
+       '380237', # DDM (Jace vs Vraska) Swamp
+       '380240', # DDM (Jace vs Vraska) Swamp
+       '380264', # DDM (Jace vs Vraska) Swamp
+       '380271', # DDM (Jace vs Vraska) Swamp
+       '380192', # DDM (Jace vs Vraska) Forest
+       '380209', # DDM (Jace vs Vraska) Forest
+       '380208', # DDM (Jace vs Vraska) Forest
+       '380198', # DDM (Jace vs Vraska) Forest
+       '380229', # DDM (Jace vs Vraska) Forest
+       '376535', # C13 (Commander 2013) Swamp
+       '376534', # C13 (Commander 2013) Swamp
+       '376533', # C13 (Commander 2013) Swamp
+       '376536', # C13 (Commander 2013) Swamp
+       '376419', # C13 (Commander 2013) Mountain
+       '376417', # C13 (Commander 2013) Mountain
+       '376418', # C13 (Commander 2013) Mountain
+       '376416' # C13 (Commander 2013) Mountain
      ].include?(cardobj['card'].first['id'].first)
     return false
   else
@@ -475,6 +497,16 @@ def mk_mtg_price(cardxml, outputdir)
                  'Army of Allah (1)'
                when '970'
                  'Army of Allah (2)'
+               when '1395' # 3ED (Revised)
+                 'Plains (1)'
+               when '1394' # 3ED (Revised)
+                 'Island (3)'
+               when '1374' # 3ED (Revised)
+                 'Swamp (2)'
+               when '1389' # 3ED (Revised)
+                 'Mountain (1)'
+               when '1391' # 3ED (Revised)
+                 'Mountain (3)'
                when '1850' # Fallen Empires
                  'Hymn to Tourach (1)'
                when '129606' # 10th edition
@@ -489,6 +521,22 @@ def mk_mtg_price(cardxml, outputdir)
                  'Swamp (2)'
                when '129756' # 10th edition
                  'Swamp (3)'
+               when '197257' # DDC (Divine vs Demonic)
+                 'Swamp (1)'
+               when '197258' # DDC (Divine vs Demonic)
+                 'Swamp (2)'
+               when '197259' # DDC (Divine vs Demonic)
+                 'Swamp (3)'
+               when '197260' # DDC (Divine vs Demonic)
+                 'Swamp (4)'
+               when '197254' # DDC (Divine vs Demonic)
+                 'Plains (1)'
+               when '197256' # DDC (Divine vs Demonic)
+                 'Plains (2)'
+               when '197255' # DDC (Divine vs Demonic)
+                 'Plains (3)'
+               when '197253' # DDC (Divine vs Demonic)
+                 'Plains (4)'
                when '220367' # MBS
                  'Swamp (1)'
                when '249376' # DDH (Ajani vs Nicol Bolas)
