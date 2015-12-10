@@ -125,45 +125,95 @@ def sendtomtgprice?(cardobj)
        '368500', # DDK (Sorin vs Tibalt) Mountain
        '368502', # DDK (Sorin vs Tibalt) Mountain
        '368512', # DDK (Sorin vs Tibalt) Mountain
+       '373341', # DDL (Heroes vs Monsters) Plains
+       '373361', # DDL (Heroes vs Monsters) Plains
        '373369', # DDL (Heroes vs Monsters) Plains
        '373386', # DDL (Heroes vs Monsters) Plains
-       '373361', # DDL (Heroes vs Monsters) Plains
-       '373341', # DDL (Heroes vs Monsters) Plains
-       '373387', # DDL (Heroes vs Monsters) Mountain
        '373346', # DDL (Heroes vs Monsters) Mountain
-       '373411', # DDL (Heroes vs Monsters) Mountain
-       '373382', # DDL (Heroes vs Monsters) Mountain
-       '373392', # DDL (Heroes vs Monsters) Mountain
        '373359', # DDL (Heroes vs Monsters) Mountain
-       '373403', # DDL (Heroes vs Monsters) Mountain
        '373378', # DDL (Heroes vs Monsters) Mountain
+       '373382', # DDL (Heroes vs Monsters) Mountain
+       '373387', # DDL (Heroes vs Monsters) Mountain
+       '373392', # DDL (Heroes vs Monsters) Mountain
+       '373403', # DDL (Heroes vs Monsters) Mountain
+       '373411', # DDL (Heroes vs Monsters) Mountain
+       '373349', # DDL (Heroes vs Monsters) Forest
        '373374', # DDL (Heroes vs Monsters) Forest
        '373375', # DDL (Heroes vs Monsters) Forest
-       '373349', # DDL (Heroes vs Monsters) Forest
        '373404', # DDL (Heroes vs Monsters) Forest
-       '380217', # DDM (Jace vs Vraska) Island
-       '380223', # DDM (Jace vs Vraska) Island
-       '380222', # DDM (Jace vs Vraska) Island
        '380194', # DDM (Jace vs Vraska) Island
+       '380217', # DDM (Jace vs Vraska) Island
+       '380222', # DDM (Jace vs Vraska) Island
+       '380223', # DDM (Jace vs Vraska) Island
        '380261', # DDM (Jace vs Vraska) Island
-       '380239', # DDM (Jace vs Vraska) Swamp
        '380237', # DDM (Jace vs Vraska) Swamp
+       '380239', # DDM (Jace vs Vraska) Swamp
        '380240', # DDM (Jace vs Vraska) Swamp
        '380264', # DDM (Jace vs Vraska) Swamp
        '380271', # DDM (Jace vs Vraska) Swamp
        '380192', # DDM (Jace vs Vraska) Forest
-       '380209', # DDM (Jace vs Vraska) Forest
-       '380208', # DDM (Jace vs Vraska) Forest
        '380198', # DDM (Jace vs Vraska) Forest
+       '380208', # DDM (Jace vs Vraska) Forest
+       '380209', # DDM (Jace vs Vraska) Forest
        '380229', # DDM (Jace vs Vraska) Forest
-       '376535', # C13 (Commander 2013) Swamp
-       '376534', # C13 (Commander 2013) Swamp
+       '373533', # THS (Theros) Plains
+       '373582', # THS (Theros) Plains
+       '373654', # THS (Theros) Plains
+       '373700', # THS (Theros) Plains
+       '373723', # THS (Theros) Island
+       '373736', # THS (Theros) Island
+       '373567', # THS (Theros) Swamp
+       '373608', # THS (Theros) Swamp
+       '373681', # THS (Theros) Swamp
+       '373706', # THS (Theros) Swamp
+       '373568', # THS (Theros) Forest
+       '373615', # THS (Theros) Forest
+       '373625', # THS (Theros) Forest
+       '373688', # THS (Theros) Forest
+       '376451', # C13 (Commander 2013) Plains
+       '376452', # C13 (Commander 2013) Plains
+       '376453', # C13 (Commander 2013) Plains
+       '376454', # C13 (Commander 2013) Plains
+       '376373', # C13 (Commander 2013) Island
+       '376374', # C13 (Commander 2013) Island
+       '376375', # C13 (Commander 2013) Island
+       '376376', # C13 (Commander 2013) Island
        '376533', # C13 (Commander 2013) Swamp
+       '376534', # C13 (Commander 2013) Swamp
+       '376535', # C13 (Commander 2013) Swamp
        '376536', # C13 (Commander 2013) Swamp
-       '376419', # C13 (Commander 2013) Mountain
+       '376416', # C13 (Commander 2013) Mountain
        '376417', # C13 (Commander 2013) Mountain
        '376418', # C13 (Commander 2013) Mountain
-       '376416' # C13 (Commander 2013) Mountain
+       '376419', # C13 (Commander 2013) Mountain
+       '376340', # C13 (Commander 2013) Forest
+       '376341', # C13 (Commander 2013) Forest
+       '376342', # C13 (Commander 2013) Forest
+       '376343', # C13 (Commander 2013) Forest
+       '383281', # M15 Island
+       '386357', # DDN (Speed vs Cunning) Plains
+       '386358', # DDN (Speed vs Cunning) Plains
+       '386359', # DDN (Speed vs Cunning) Plains
+       '386360', # DDN (Speed vs Cunning) Plains
+       '386333', # DDN (Speed vs Cunning) Island
+       '386334', # DDN (Speed vs Cunning) Island
+       '386335', # DDN (Speed vs Cunning) Island
+       '386371', # DDN (Speed vs Cunning) Swamp
+       '386372', # DDN (Speed vs Cunning) Swamp
+       '386373', # DDN (Speed vs Cunning) Swamp
+       '386348', # DDN (Speed vs Cunning) Mountain
+       '386349', # DDN (Speed vs Cunning) Mountain
+       '386350', # DDN (Speed vs Cunning) Mountain
+       '386351', # DDN (Speed vs Cunning) Mountain
+       '386623', # KTK (Khans of Tarkir) Plains
+       '386624', # KTK (Khans of Tarkir) Plains
+       '386625', # KTK (Khans of Tarkir) Plains
+       '386626', # KTK (Khans of Tarkir) Plains
+       '386565', # KTK (Khans of Tarkir) Island
+       '386685', # KTK (Khans of Tarkir) Swamp
+       '386540', # KTK (Khans of Tarkir) Forest
+       '386541', # KTK (Khans of Tarkir) Forest
+       '386542' # KTK (Khans of Tarkir) Forest
      ].include?(cardobj['card'].first['id'].first)
     return false
   else
@@ -537,12 +587,30 @@ def mk_mtg_price(cardxml, outputdir)
                  'Plains (3)'
                when '197253' # DDC (Divine vs Demonic)
                  'Plains (4)'
+               # when '210513' # DDE (Phyrexia vs the Coalition)
+               #   'Plains'
+               # when '210511' # DDE (Phyrexia vs the Coalition)
+               #   'Island'
+               when '210507' # DDE (Phyrexia vs the Coalition)
+                 'Swamp (1)'
+               when '210506' # DDE (Phyrexia vs the Coalition)
+                 'Swamp (2)'
+               when '210505' # DDE (Phyrexia vs the Coalition)
+                 'Swamp (3)'
+               when '210508' # DDE (Phyrexia vs the Coalition)
+                 'Swamp (4)'
+               # when '210512' # DDE (Phyrexia vs the Coalition)
+               #   'Mountain'
+               when '210509' # DDE (Phyrexia vs the Coalition)
+                 'Forest (1)'
+               when '210510' # DDE (Phyrexia vs the Coalition)
+                 'Forest (2)'
                when '220367' # MBS
                  'Swamp (1)'
-               when '249376' # DDH (Ajani vs Nicol Bolas)
-                 'Plains'
-               when '259287' # DDH (Ajani vs Nicol Bolas)
-                 'Island'
+               # when '249376' # DDH (Ajani vs Nicol Bolas)
+               #   'Plains'
+               # when '259287' # DDH (Ajani vs Nicol Bolas)
+               #   'Island'
                when '259283' # DDH (Ajani vs Nicol Bolas)
                  'Swamp (1)'
                when '262652' # DDH (Ajani vs Nicol Bolas)
