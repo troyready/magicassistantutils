@@ -44,8 +44,6 @@ require 'net/http'
 require 'uri'
 require 'yaml/store'
 
-require_relative 'reserved_list'
-
 # Returns an object with the file's parsed contents
 def parsexml(xmlfile)
   require 'xmlsimple'
@@ -112,109 +110,18 @@ def sendtomtgprice?(cardobj)
      name.start_with?('Tember City') ||
      # Import can't handle the nested comma here
      name.start_with?('Borrowing 100,000 Arrows') ||
-     [
-       '244322', # M12 Forest
-       '368473', # DDK (Sorin vs Tibalt) Plains
-       '368480', # DDK (Sorin vs Tibalt) Plains
-       '368508', # DDK (Sorin vs Tibalt) Plains
-       '368482', # DDK (Sorin vs Tibalt) Swamp
-       '368484', # DDK (Sorin vs Tibalt) Swamp
-       '368494', # DDK (Sorin vs Tibalt) Swamp
-       '368497', # DDK (Sorin vs Tibalt) Swamp
-       '368538', # DDK (Sorin vs Tibalt) Swamp
-       '368500', # DDK (Sorin vs Tibalt) Mountain
-       '368502', # DDK (Sorin vs Tibalt) Mountain
-       '368512', # DDK (Sorin vs Tibalt) Mountain
-       '373341', # DDL (Heroes vs Monsters) Plains
-       '373361', # DDL (Heroes vs Monsters) Plains
-       '373369', # DDL (Heroes vs Monsters) Plains
-       '373386', # DDL (Heroes vs Monsters) Plains
-       '373346', # DDL (Heroes vs Monsters) Mountain
-       '373359', # DDL (Heroes vs Monsters) Mountain
-       '373378', # DDL (Heroes vs Monsters) Mountain
-       '373382', # DDL (Heroes vs Monsters) Mountain
-       '373387', # DDL (Heroes vs Monsters) Mountain
-       '373392', # DDL (Heroes vs Monsters) Mountain
-       '373403', # DDL (Heroes vs Monsters) Mountain
-       '373411', # DDL (Heroes vs Monsters) Mountain
-       '373349', # DDL (Heroes vs Monsters) Forest
-       '373374', # DDL (Heroes vs Monsters) Forest
-       '373375', # DDL (Heroes vs Monsters) Forest
-       '373404', # DDL (Heroes vs Monsters) Forest
-       '380194', # DDM (Jace vs Vraska) Island
-       '380217', # DDM (Jace vs Vraska) Island
-       '380222', # DDM (Jace vs Vraska) Island
-       '380223', # DDM (Jace vs Vraska) Island
-       '380261', # DDM (Jace vs Vraska) Island
-       '380237', # DDM (Jace vs Vraska) Swamp
-       '380239', # DDM (Jace vs Vraska) Swamp
-       '380240', # DDM (Jace vs Vraska) Swamp
-       '380264', # DDM (Jace vs Vraska) Swamp
-       '380271', # DDM (Jace vs Vraska) Swamp
-       '380192', # DDM (Jace vs Vraska) Forest
-       '380198', # DDM (Jace vs Vraska) Forest
-       '380208', # DDM (Jace vs Vraska) Forest
-       '380209', # DDM (Jace vs Vraska) Forest
-       '380229', # DDM (Jace vs Vraska) Forest
-       '373533', # THS (Theros) Plains
-       '373582', # THS (Theros) Plains
-       '373654', # THS (Theros) Plains
-       '373700', # THS (Theros) Plains
-       '373723', # THS (Theros) Island
-       '373736', # THS (Theros) Island
-       '373567', # THS (Theros) Swamp
-       '373608', # THS (Theros) Swamp
-       '373681', # THS (Theros) Swamp
-       '373706', # THS (Theros) Swamp
-       '373568', # THS (Theros) Forest
-       '373615', # THS (Theros) Forest
-       '373625', # THS (Theros) Forest
-       '373688', # THS (Theros) Forest
-       '376451', # C13 (Commander 2013) Plains
-       '376452', # C13 (Commander 2013) Plains
-       '376453', # C13 (Commander 2013) Plains
-       '376454', # C13 (Commander 2013) Plains
-       '376373', # C13 (Commander 2013) Island
-       '376374', # C13 (Commander 2013) Island
-       '376375', # C13 (Commander 2013) Island
-       '376376', # C13 (Commander 2013) Island
-       '376533', # C13 (Commander 2013) Swamp
-       '376534', # C13 (Commander 2013) Swamp
-       '376535', # C13 (Commander 2013) Swamp
-       '376536', # C13 (Commander 2013) Swamp
-       '376416', # C13 (Commander 2013) Mountain
-       '376417', # C13 (Commander 2013) Mountain
-       '376418', # C13 (Commander 2013) Mountain
-       '376419', # C13 (Commander 2013) Mountain
-       '376340', # C13 (Commander 2013) Forest
-       '376341', # C13 (Commander 2013) Forest
-       '376342', # C13 (Commander 2013) Forest
-       '376343', # C13 (Commander 2013) Forest
-       '383281', # M15 Island
-       '386357', # DDN (Speed vs Cunning) Plains
-       '386358', # DDN (Speed vs Cunning) Plains
-       '386359', # DDN (Speed vs Cunning) Plains
-       '386360', # DDN (Speed vs Cunning) Plains
-       '386333', # DDN (Speed vs Cunning) Island
-       '386334', # DDN (Speed vs Cunning) Island
-       '386335', # DDN (Speed vs Cunning) Island
-       '386371', # DDN (Speed vs Cunning) Swamp
-       '386372', # DDN (Speed vs Cunning) Swamp
-       '386373', # DDN (Speed vs Cunning) Swamp
-       '386348', # DDN (Speed vs Cunning) Mountain
-       '386349', # DDN (Speed vs Cunning) Mountain
-       '386350', # DDN (Speed vs Cunning) Mountain
-       '386351', # DDN (Speed vs Cunning) Mountain
-       '386623', # KTK (Khans of Tarkir) Plains
-       '386624', # KTK (Khans of Tarkir) Plains
-       '386625', # KTK (Khans of Tarkir) Plains
-       '386626', # KTK (Khans of Tarkir) Plains
-       '386565', # KTK (Khans of Tarkir) Island
-       '386685', # KTK (Khans of Tarkir) Swamp
-       '386540', # KTK (Khans of Tarkir) Forest
-       '386541', # KTK (Khans of Tarkir) Forest
-       '386542' # KTK (Khans of Tarkir) Forest
-     ].include?(cardobj['card'].first['id'].first)
+     ( %w(Plains Island Swamp Mountain Forest).include?(name) &&
+       [
+         'Magic 2012',
+         'Duel Decks: Sorin vs. Tibalt',
+         'Duel Decks: Heroes vs. Monsters',
+         'Duel Decks: Jace vs. Vraska',
+         'Theros',
+         'Commander 2013 Edition',
+         'Magic 2015 Core Set',
+         'Duel Decks: Speed vs. Cunning',
+         'Khans of Tarkir'
+       ].include?(edition) )
     return false
   else
     return true
@@ -504,8 +411,10 @@ def mkdeckboxinv(cardxml, outputdir, tradelistfile, tradecountdefault)
   end
 end
 
-def mk_db_wishlist(cardxml, outputdir)
+def mk_deckbox_wishlist(cardxml, wishlist_yaml_file, outputdir)
   require 'csv'
+  require 'yaml'
+  wishlist_minimum = YAML.load(File.read(wishlist_yaml_file))
   CSV.open("#{outputdir}/wishlist.csv", 'wb') do |csv|
     csv << [
       'Count',
@@ -522,8 +431,8 @@ def mk_db_wishlist(cardxml, outputdir)
       'Promo',
       'Textless'
     ]
-    @reserved_list.each do |card|
-      card_count = @only_restricted.include?(card) ? 1 : 4
+    wishlist_minimum.each do |card, v|
+      card_count = v['count'].to_i
       cardxml['list'].first['mcp'].each do |inv_card|
         next if !sendtodeckbox?(inv_card) ||
                 card != inv_card['card'].first['name'].first
@@ -531,7 +440,12 @@ def mk_db_wishlist(cardxml, outputdir)
       end
       next unless card_count > 0
       card_to_add = [card_count, card, '']
-      10.times {card_to_add << nil} # matches their file's number of commas
+      if v['edition']
+        card_to_add << v['edition']
+      else
+        card_to_add << nil
+      end
+      9.times {card_to_add << nil} # matches their file's number of commas
       csv << card_to_add
     end
   end
@@ -539,288 +453,22 @@ end
 
 def mk_mtg_price(cardxml, outputdir)
   require 'csv'
+  require 'yaml/store'
+  mtgprice_mapping = YAML.load(
+    File.read(
+      File.join(
+        File.dirname(__FILE__),
+        'config',
+        'mtgprice_mapping.yml'
+      )
+    )
+  )
   card_hash = {}
   cardxml['list'].first['mcp'].each do |card|
     next unless sendtomtgprice?(card)
-    cardname = case card['card'].first['id'].first
-               when '969'
-                 'Army of Allah (1)'
-               when '970'
-                 'Army of Allah (2)'
-               when '1395' # 3ED (Revised)
-                 'Plains (1)'
-               when '1394' # 3ED (Revised)
-                 'Island (3)'
-               when '1374' # 3ED (Revised)
-                 'Swamp (2)'
-               when '1389' # 3ED (Revised)
-                 'Mountain (1)'
-               when '1391' # 3ED (Revised)
-                 'Mountain (3)'
-               when '1850' # Fallen Empires
-                 'Hymn to Tourach (1)'
-               when '129606' # 10th edition
-                 'Island (1)'
-               when '129607' # 10th edition
-                 'Island (2)'
-               when '129608' # 10th edition
-                 'Island (3)'
-               when '129754' # 10th edition
-                 'Swamp (1)'
-               when '129755' # 10th edition
-                 'Swamp (2)'
-               when '129756' # 10th edition
-                 'Swamp (3)'
-               when '197257' # DDC (Divine vs Demonic)
-                 'Swamp (1)'
-               when '197258' # DDC (Divine vs Demonic)
-                 'Swamp (2)'
-               when '197259' # DDC (Divine vs Demonic)
-                 'Swamp (3)'
-               when '197260' # DDC (Divine vs Demonic)
-                 'Swamp (4)'
-               when '197254' # DDC (Divine vs Demonic)
-                 'Plains (1)'
-               when '197256' # DDC (Divine vs Demonic)
-                 'Plains (2)'
-               when '197255' # DDC (Divine vs Demonic)
-                 'Plains (3)'
-               when '197253' # DDC (Divine vs Demonic)
-                 'Plains (4)'
-               # when '210513' # DDE (Phyrexia vs the Coalition)
-               #   'Plains'
-               # when '210511' # DDE (Phyrexia vs the Coalition)
-               #   'Island'
-               when '210507' # DDE (Phyrexia vs the Coalition)
-                 'Swamp (1)'
-               when '210506' # DDE (Phyrexia vs the Coalition)
-                 'Swamp (2)'
-               when '210505' # DDE (Phyrexia vs the Coalition)
-                 'Swamp (3)'
-               when '210508' # DDE (Phyrexia vs the Coalition)
-                 'Swamp (4)'
-               # when '210512' # DDE (Phyrexia vs the Coalition)
-               #   'Mountain'
-               when '210509' # DDE (Phyrexia vs the Coalition)
-                 'Forest (1)'
-               when '210510' # DDE (Phyrexia vs the Coalition)
-                 'Forest (2)'
-               when '220367' # MBS
-                 'Swamp (1)'
-               # when '249376' # DDH (Ajani vs Nicol Bolas)
-               #   'Plains'
-               # when '259287' # DDH (Ajani vs Nicol Bolas)
-               #   'Island'
-               when '259283' # DDH (Ajani vs Nicol Bolas)
-                 'Swamp (1)'
-               when '262652' # DDH (Ajani vs Nicol Bolas)
-                 'Swamp (2)'
-               when '259286' # DDH (Ajani vs Nicol Bolas)
-                 'Mountain (1)'
-               when '259284' # DDH (Ajani vs Nicol Bolas)
-                 'Mountain (2)'
-               when '262651' # DDH (Ajani vs Nicol Bolas)
-                 'Forest (1)'
-               when '259285' # DDH (Ajani vs Nicol Bolas)
-                 'Forest (2)'
-               when '245241' # INN (Innistrad)
-                 'Swamp (3)'
-               when '284497' # DDI (Venser vs Koth)
-                 'Plains (1)'
-               when '284499' # DDI (Venser vs Koth)
-                 'Plains (2)'
-               when '284498' # DDI (Venser vs Koth)
-                 'Plains (3)'
-               when '284491' # DDI (Venser vs Koth)
-                 'Island (1)'
-               when '284490' # DDI (Venser vs Koth)
-                 'Island (2)'
-               when '284492' # DDI (Venser vs Koth)
-                 'Island (3)'
-               when '284493' # DDI (Venser vs Koth)
-                 'Mountain (3)'
-               when '284494' # DDI (Venser vs Koth)
-                 'Mountain (1)'
-               when '284495' # DDI (Venser vs Koth)
-                 'Mountain (4)'
-               when '284496' # DDI (Venser vs Koth)
-                 'Mountain (2)'
-               when '269634' # AVR
-                 'Plains (2)'
-               when '269627' # AVR
-                 'Swamp (2)'
-               when '269636' # AVR
-                 'Forest (1)'
-               when '269635' # AVR
-                 'Forest (2)'
-               when '269629' # AVR
-                 'Forest (3)'
-               when '276461' # PC2 (Planechase 2012)
-                 'Plains (1)'
-               when '276469' # PC2 (Planechase 2012)
-                 'Plains (2)'
-               when '276473' # PC2 (Planechase 2012)
-                 'Plains (3)'
-               when '276459' # PC2 (Planechase 2012)
-                 'Plains (4)'
-               when '276458' # PC2 (Planechase 2012)
-                 'Plains (5)'
-               when '276462' # PC2 (Planechase 2012)
-                 'Island (1)'
-               when '276453' # PC2 (Planechase 2012)
-                 'Island (2)'
-               when '276466' # PC2 (Planechase 2012)
-                 'Island (3)'
-               when '276471' # PC2 (Planechase 2012)
-                 'Island (4)'
-               when '276452' # PC2 (Planechase 2012)
-                 'Island (5)'
-               when '276455' # PC2 (Planechase 2012)
-                 'Swamp (1)'
-               when '276472' # PC2 (Planechase 2012)
-                 'Swamp (2)'
-               when '276457' # PC2 (Planechase 2012)
-                 'Swamp (3)'
-               when '276448' # PC2 (Planechase 2012)
-                 'Swamp (4)'
-               when '276463' # PC2 (Planechase 2012)
-                 'Swamp (5)'
-               when '276465' # PC2 (Planechase 2012)
-                 'Mountain (1)'
-               when '276447' # PC2 (Planechase 2012)
-                 'Mountain (2)'
-               when '276449' # PC2 (Planechase 2012)
-                 'Mountain (3)'
-               when '276470' # PC2 (Planechase 2012)
-                 'Mountain (4)'
-               when '276464' # PC2 (Planechase 2012)
-                 'Forest (1)'
-               when '276456' # PC2 (Planechase 2012)
-                 'Forest (2)'
-               when '276454' # PC2 (Planechase 2012)
-                 'Forest (3)'
-               when '276460' # PC2 (Planechase 2012)
-                 'Forest (4)'
-               when '276468' # PC2 (Planechase 2012)
-                 'Forest (5)'
-               when '276467' # PC2 (Planechase 2012)
-                 'Forest (6)'
-               when '249733' # M13
-                 'Plains (1)'
-               when '249731' # M13
-                 'Plains (3)'
-               when '249734' # M13
-                 'Plains (4)'
-               when '249726' # M13
-                 'Island (1)'
-               when '249725' # M13
-                 'Island (2)'
-               when '249723' # M13
-                 'Island (3)'
-               when '249724' # M13
-                 'Island (4)'
-               when '249739' # M13
-                 'Swamp (1)'
-               when '249740' # M13
-                 'Swamp (2)'
-               when '249738' # M13
-                 'Swamp (3)'
-               when '249737' # M13
-                 'Swamp (4)'
-               when '249727' # M13
-                 'Mountain (4)'
-               when '249718' # M13
-                 'Forest (1)'
-               when '249719' # M13
-                 'Forest (2)'
-               when '249720' # M13
-                 'Forest (3)'
-               when '249721' # M13
-                 'Forest (4)'
-               when '292943' # DDJ (Izzet vs Golgari)
-                 'Forest (1)'
-               when '292945' # DDJ (Izzet vs Golgari)
-                 'Forest (2)'
-               when '292944' # DDJ (Izzet vs Golgari)
-                 'Forest (3)'
-               when '292946' # DDJ (Izzet vs Golgari)
-                 'Forest (4)'
-               when '292962' # DDJ (Izzet vs Golgari)
-                 'Swamp (1)'
-               when '292961' # DDJ (Izzet vs Golgari)
-                 'Swamp (2)'
-               when '292960' # DDJ (Izzet vs Golgari)
-                 'Swamp (3)'
-               when '292963' # DDJ (Izzet vs Golgari)
-                 'Swamp (4)'
-               when '292767' # DDJ (Izzet vs Golgari)
-                 'Mountain (1)'
-               when '292769' # DDJ (Izzet vs Golgari)
-                 'Mountain (2)'
-               when '292768' # DDJ (Izzet vs Golgari)
-                 'Mountain (3)'
-               when '292770' # DDJ (Izzet vs Golgari)
-                 'Mountain (4)'
-               when '292764' # DDJ (Izzet vs Golgari)
-                 'Island (1)'
-               when '292765' # DDJ (Izzet vs Golgari)
-                 'Island (2)'
-               when '292763' # DDJ (Izzet vs Golgari)
-                 'Island (3)'
-               when '292766' # DDJ (Izzet vs Golgari)
-                 'Island (4)'
-               when '289310' # RTR
-                 'Plains (1)'
-               when '289311' # RTR
-                 'Plains (2)'
-               when '289309' # RTR
-                 'Plains (3)'
-               when '289312' # RTR
-                 'Plains (4)'
-               when '333721' # RTR
-                 'Plains (5)'
-               when '289316' # RTR
-                 'Island (1)'
-               when '289315' # RTR
-                 'Island (2)'
-               when '289313' # RTR
-                 'Island (3)'
-               when '289314' # RTR
-                 'Island (4)'
-               when '333719' # RTR
-                 'Island (5)'
-               when '289317' # RTR
-                 'Swamp (1)'
-               when '289320' # RTR
-                 'Swamp (2)'
-               when '289318' # RTR
-                 'Swamp (3)'
-               when '289319' # RTR
-                 'Swamp (4)'
-               when '333722' # RTR
-                 'Swamp (5)'
-               when '289321' # RTR
-                 'Mountain (1)'
-               when '289324' # RTR
-                 'Mountain (2)'
-               when '289322' # RTR
-                 'Mountain (3)'
-               when '289323' # RTR
-                 'Mountain (4)'
-               when '333720' # RTR
-                 'Mountain (5)'
-               when '289325' # RTR
-                 'Forest (1)'
-               when '289326' # RTR
-                 'Forest (2)'
-               when '289328' # RTR
-                 'Forest (3)'
-               when '289327' # RTR
-                 'Forest (4)'
-               when '333718' # RTR
-                 'Forest (5)'
-               when '370591' # M14
-                 'Mountain (3)'
+    cardname = case mtgprice_mapping[card['card'].first['id'].first]
+               when true
+                 mtgprice_mapping[card['card'].first['id'].first]['name']
                else
                  card['card'].first['name'].first
                  .gsub(/ \(.*/, '')
@@ -997,6 +645,22 @@ if __FILE__ == $PROGRAM_NAME
       options[:tradecountdefault] = f.to_i
     end
 
+    # Optional YAML file to generate a deckbox wishlist
+    # This will be evaluated against your collection
+    # E.g, if your wishlist count is 4, and you own 3 copies of the card,
+    # the generated wishlist will have a count of 1
+    #
+    # yaml file example
+    # ---
+    # Fog:
+    #   edition: Magic 2013
+    #   count: 3
+    # Giant Growth:
+    # (etc)
+    opts.on('-w', '--wishlist-yaml FILE', 'Wishlist yaml file') do |f|
+      options[:wishlist_yaml_file] = f
+    end
+
     # This displays the help screen, all programs are
     # assumed to have this option.
     opts.on('-h', '--help', 'Display this screen') do
@@ -1035,7 +699,7 @@ if __FILE__ == $PROGRAM_NAME
     options[:tradecountdefault]
   )
 
-  mk_db_wishlist(mainxml, options[:outputdir])
+  mk_deckbox_wishlist(mainxml, options[:wishlist_yaml_file], options[:outputdir]) if options[:wishlist_yaml_file]
 
   mk_mtg_price(mainxml, options[:outputdir])
 end

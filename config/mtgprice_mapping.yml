@@ -1,0 +1,401 @@
+---
+'969':
+  name: Army of Allah (1)
+'970':
+  name: Army of Allah (2)
+'1395':
+  edition: 3ED (Revised)
+  name: Plains (1)
+'1394':
+  edition: 3ED (Revised)
+  name: Island (3)
+'1374':
+  edition: 3ED (Revised)
+  name: Swamp (2)
+'1389':
+  edition: 3ED (Revised)
+  name: Mountain (1)
+'1391':
+  edition: 3ED (Revised)
+  name: Mountain (3)
+'1850':
+  edition: Fallen Empires
+  name: Hymn to Tourach (1)
+'129606':
+  edition: 10th edition
+  name: Island (1)
+'129607':
+  edition: 10th edition
+  name: Island (2)
+'129608':
+  edition: 10th edition
+  name: Island (3)
+'129754':
+  edition: 10th edition
+  name: Swamp (1)
+'129755':
+  edition: 10th edition
+  name: Swamp (2)
+'129756':
+  edition: 10th edition
+  name: Swamp (3)
+'197257':
+  edition: DDC (Divine vs Demonic)
+  name: Swamp (1)
+'197258':
+  edition: DDC (Divine vs Demonic)
+  name: Swamp (2)
+'197259':
+  edition: DDC (Divine vs Demonic)
+  name: Swamp (3)
+'197260':
+  edition: DDC (Divine vs Demonic)
+  name: Swamp (4)
+'197254':
+  edition: DDC (Divine vs Demonic)
+  name: Plains (1)
+'197256':
+  edition: DDC (Divine vs Demonic)
+  name: Plains (2)
+'197255':
+  edition: DDC (Divine vs Demonic)
+  name: Plains (3)
+'197253':
+  edition: DDC (Divine vs Demonic)
+  name: Plains (4)
+'210507':
+  edition: DDE (Phyrexia vs the Coalition)
+  name: Swamp (1)
+'210506':
+  edition: DDE (Phyrexia vs the Coalition)
+  name: Swamp (2)
+'210505':
+  edition: DDE (Phyrexia vs the Coalition)
+  name: Swamp (3)
+'210508':
+  edition: DDE (Phyrexia vs the Coalition)
+  name: Swamp (4)
+'210509':
+  edition: DDE (Phyrexia vs the Coalition)
+  name: Forest (1)
+'210510':
+  edition: DDE (Phyrexia vs the Coalition)
+  name: Forest (2)
+'220367':
+  edition: MBS
+  name: Swamp (1)
+'259283':
+  edition: DDH (Ajani vs Nicol Bolas)
+  name: Swamp (1)
+'262652':
+  edition: DDH (Ajani vs Nicol Bolas)
+  name: Swamp (2)
+'259286':
+  edition: DDH (Ajani vs Nicol Bolas)
+  name: Mountain (1)
+'259284':
+  edition: DDH (Ajani vs Nicol Bolas)
+  name: Mountain (2)
+'262651':
+  edition: DDH (Ajani vs Nicol Bolas)
+  name: Forest (1)
+'259285':
+  edition: DDH (Ajani vs Nicol Bolas)
+  name: Forest (2)
+'245241':
+  edition: INN (Innistrad)
+  name: Swamp (3)
+'284497':
+  edition: DDI (Venser vs Koth)
+  name: Plains (1)
+'284499':
+  edition: DDI (Venser vs Koth)
+  name: Plains (2)
+'284498':
+  edition: DDI (Venser vs Koth)
+  name: Plains (3)
+'284491':
+  edition: DDI (Venser vs Koth)
+  name: Island (1)
+'284490':
+  edition: DDI (Venser vs Koth)
+  name: Island (2)
+'284492':
+  edition: DDI (Venser vs Koth)
+  name: Island (3)
+'284493':
+  edition: DDI (Venser vs Koth)
+  name: Mountain (3)
+'284494':
+  edition: DDI (Venser vs Koth)
+  name: Mountain (1)
+'284495':
+  edition: DDI (Venser vs Koth)
+  name: Mountain (4)
+'284496':
+  edition: DDI (Venser vs Koth)
+  name: Mountain (2)
+'269634':
+  edition: AVR
+  name: Plains (2)
+'269627':
+  edition: AVR
+  name: Swamp (2)
+'269636':
+  edition: AVR
+  name: Forest (1)
+'269635':
+  edition: AVR
+  name: Forest (2)
+'269629':
+  edition: AVR
+  name: Forest (3)
+'276461':
+  edition: PC2 (Planechase 2012)
+  name: Plains (1)
+'276469':
+  edition: PC2 (Planechase 2012)
+  name: Plains (2)
+'276473':
+  edition: PC2 (Planechase 2012)
+  name: Plains (3)
+'276459':
+  edition: PC2 (Planechase 2012)
+  name: Plains (4)
+'276458':
+  edition: PC2 (Planechase 2012)
+  name: Plains (5)
+'276462':
+  edition: PC2 (Planechase 2012)
+  name: Island (1)
+'276453':
+  edition: PC2 (Planechase 2012)
+  name: Island (2)
+'276466':
+  edition: PC2 (Planechase 2012)
+  name: Island (3)
+'276471':
+  edition: PC2 (Planechase 2012)
+  name: Island (4)
+'276452':
+  edition: PC2 (Planechase 2012)
+  name: Island (5)
+'276455':
+  edition: PC2 (Planechase 2012)
+  name: Swamp (1)
+'276472':
+  edition: PC2 (Planechase 2012)
+  name: Swamp (2)
+'276457':
+  edition: PC2 (Planechase 2012)
+  name: Swamp (3)
+'276448':
+  edition: PC2 (Planechase 2012)
+  name: Swamp (4)
+'276463':
+  edition: PC2 (Planechase 2012)
+  name: Swamp (5)
+'276465':
+  edition: PC2 (Planechase 2012)
+  name: Mountain (1)
+'276447':
+  edition: PC2 (Planechase 2012)
+  name: Mountain (2)
+'276449':
+  edition: PC2 (Planechase 2012)
+  name: Mountain (3)
+'276470':
+  edition: PC2 (Planechase 2012)
+  name: Mountain (4)
+'276464':
+  edition: PC2 (Planechase 2012)
+  name: Forest (1)
+'276456':
+  edition: PC2 (Planechase 2012)
+  name: Forest (2)
+'276454':
+  edition: PC2 (Planechase 2012)
+  name: Forest (3)
+'276460':
+  edition: PC2 (Planechase 2012)
+  name: Forest (4)
+'276468':
+  edition: PC2 (Planechase 2012)
+  name: Forest (5)
+'276467':
+  edition: PC2 (Planechase 2012)
+  name: Forest (6)
+'249733':
+  edition: M13
+  name: Plains (1)
+'249731':
+  edition: M13
+  name: Plains (3)
+'249734':
+  edition: M13
+  name: Plains (4)
+'249726':
+  edition: M13
+  name: Island (1)
+'249725':
+  edition: M13
+  name: Island (2)
+'249723':
+  edition: M13
+  name: Island (3)
+'249724':
+  edition: M13
+  name: Island (4)
+'249739':
+  edition: M13
+  name: Swamp (1)
+'249740':
+  edition: M13
+  name: Swamp (2)
+'249738':
+  edition: M13
+  name: Swamp (3)
+'249737':
+  edition: M13
+  name: Swamp (4)
+'249727':
+  edition: M13
+  name: Mountain (4)
+'249718':
+  edition: M13
+  name: Forest (1)
+'249719':
+  edition: M13
+  name: Forest (2)
+'249720':
+  edition: M13
+  name: Forest (3)
+'249721':
+  edition: M13
+  name: Forest (4)
+'292943':
+  edition: DDJ (Izzet vs Golgari)
+  name: Forest (1)
+'292945':
+  edition: DDJ (Izzet vs Golgari)
+  name: Forest (2)
+'292944':
+  edition: DDJ (Izzet vs Golgari)
+  name: Forest (3)
+'292946':
+  edition: DDJ (Izzet vs Golgari)
+  name: Forest (4)
+'292962':
+  edition: DDJ (Izzet vs Golgari)
+  name: Swamp (1)
+'292961':
+  edition: DDJ (Izzet vs Golgari)
+  name: Swamp (2)
+'292960':
+  edition: DDJ (Izzet vs Golgari)
+  name: Swamp (3)
+'292963':
+  edition: DDJ (Izzet vs Golgari)
+  name: Swamp (4)
+'292767':
+  edition: DDJ (Izzet vs Golgari)
+  name: Mountain (1)
+'292769':
+  edition: DDJ (Izzet vs Golgari)
+  name: Mountain (2)
+'292768':
+  edition: DDJ (Izzet vs Golgari)
+  name: Mountain (3)
+'292770':
+  edition: DDJ (Izzet vs Golgari)
+  name: Mountain (4)
+'292764':
+  edition: DDJ (Izzet vs Golgari)
+  name: Island (1)
+'292765':
+  edition: DDJ (Izzet vs Golgari)
+  name: Island (2)
+'292763':
+  edition: DDJ (Izzet vs Golgari)
+  name: Island (3)
+'292766':
+  edition: DDJ (Izzet vs Golgari)
+  name: Island (4)
+'289310':
+  edition: RTR
+  name: Plains (1)
+'289311':
+  edition: RTR
+  name: Plains (2)
+'289309':
+  edition: RTR
+  name: Plains (3)
+'289312':
+  edition: RTR
+  name: Plains (4)
+'333721':
+  edition: RTR
+  name: Plains (5)
+'289316':
+  edition: RTR
+  name: Island (1)
+'289315':
+  edition: RTR
+  name: Island (2)
+'289313':
+  edition: RTR
+  name: Island (3)
+'289314':
+  edition: RTR
+  name: Island (4)
+'333719':
+  edition: RTR
+  name: Island (5)
+'289317':
+  edition: RTR
+  name: Swamp (1)
+'289320':
+  edition: RTR
+  name: Swamp (2)
+'289318':
+  edition: RTR
+  name: Swamp (3)
+'289319':
+  edition: RTR
+  name: Swamp (4)
+'333722':
+  edition: RTR
+  name: Swamp (5)
+'289321':
+  edition: RTR
+  name: Mountain (1)
+'289324':
+  edition: RTR
+  name: Mountain (2)
+'289322':
+  edition: RTR
+  name: Mountain (3)
+'289323':
+  edition: RTR
+  name: Mountain (4)
+'333720':
+  edition: RTR
+  name: Mountain (5)
+'289325':
+  edition: RTR
+  name: Forest (1)
+'289326':
+  edition: RTR
+  name: Forest (2)
+'289328':
+  edition: RTR
+  name: Forest (3)
+'289327':
+  edition: RTR
+  name: Forest (4)
+'333718':
+  edition: RTR
+  name: Forest (5)
+'370591':
+  edition: M14
+  name: Mountain (3)
