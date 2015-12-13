@@ -175,13 +175,13 @@ def mkdecklist(xml, outputdir)
       'count' => decklistcount[decklistnames.index(card)].to_s
     }
   end
-  File.open("#{outputdir}/main.dec", 'w') do |f|
+  File.open("#{outputdir}/main.dec", 'wb') do |f|
     f.puts "// Generated on #{Time.new}\n"
     decklist.each do |card|
       f.puts "#{card['count']} #{card['name']}\n"
     end
   end
-  File.open("#{outputdir}/main_mtgshoebox.dec", 'w') do |f|
+  File.open("#{outputdir}/main_mtgshoebox.dec", 'wb') do |f|
     decklist.each do |card|
       next if ['Celestine Reef',
                'Horizon Boughs',
@@ -466,7 +466,7 @@ def mk_mtg_price(cardxml, outputdir)
   card_hash = {}
   cardxml['list'].first['mcp'].each do |card|
     next unless sendtomtgprice?(card)
-    cardname = case mtgprice_mapping[card['card'].first['id'].first]
+    cardname = case mtgprice_mapping.has_key? card['card'].first['id'].first
                when true
                  mtgprice_mapping[card['card'].first['id'].first]['name']
                else
@@ -479,6 +479,7 @@ def mk_mtg_price(cardxml, outputdir)
               .gsub(/.*Clash Pack Promos/, 'Clash Packs')
               .gsub(/Magic Game Day Cards/, 'Game Day')
               .gsub(/Magic Player Rewards/, 'Player Rewards')
+              .gsub(/Prerelease Events:.*/, 'Prerelease Events')
               .gsub(%r{WPN/Gateway}, 'Gateway')
               .gsub(/Unlimited Edition/, 'Unlimited')
               .gsub(/Revised Edition/, 'Revised')
@@ -550,6 +551,7 @@ def mk_mtg_price(cardxml, outputdir)
       edition = 'Planechase 2012 Planes'
     end
     if !(edition.include?('Arena League') ||
+         edition.include?('Clash Packs') ||
          edition.include?('Duel Decks') ||
          edition.include?('Friday Night Magic') ||
          edition.include?('From the Vault') ||
@@ -557,6 +559,7 @@ def mk_mtg_price(cardxml, outputdir)
          edition.include?('Gateway') ||
          edition.include?('Grand Prix') ||
          edition.include?('Judge Gift') ||
+         edition.include?('Launch Parties') ||
          edition.include?('Media Inserts') ||
          edition.include?('Player Rewards') ||
          edition.include?('Prerelease ')) &&
@@ -581,17 +584,18 @@ def mk_mtg_price(cardxml, outputdir)
     end
   end
 
-  CSV.open("#{outputdir}/mtgprice_coll.csv", 'wb') do |csv|
+  card_hash = CSV.generate do |csv|
     card_hash.sort.map do |_k, v|
-      csv << [v['count'], "#{v['name']}FORCE_COMMAS,", v['edition'], v['foil']]
+      csv << [v['count'],
+              "#{v['name']}FORCE_COMMAS,",
+              v['edition'],
+              v['foil']]
     end
   end
-  IO.write(
-    "#{outputdir}/mtgprice_coll.csv",
-    File.open("#{outputdir}/mtgprice_coll.csv") do |f|
-      f.read.gsub(/FORCE_COMMAS,/, '')
-    end
-  )
+
+  File.open("#{outputdir}/mtgprice_coll.csv", 'wb') do |f|
+    f.puts card_hash.gsub!(/FORCE_COMMAS,/, '')
+  end
 end
 
 if __FILE__ == $PROGRAM_NAME
