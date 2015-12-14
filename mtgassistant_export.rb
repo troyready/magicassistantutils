@@ -112,15 +112,20 @@ def sendtomtgprice?(cardobj)
      name.start_with?('Borrowing 100,000 Arrows') ||
      ( %w(Plains Island Swamp Mountain Forest).include?(name) &&
        [
-         'Magic 2012',
-         'Duel Decks: Sorin vs. Tibalt',
+         'Battle for Zendikar',
+         'Commander 2013 Edition',
+         'Commander 2014',
+         'Dragons of Tarkir',
+         'Duel Decks: Elspeth vs. Kiora',
          'Duel Decks: Heroes vs. Monsters',
          'Duel Decks: Jace vs. Vraska',
-         'Theros',
-         'Commander 2013 Edition',
-         'Magic 2015 Core Set',
+         'Duel Decks: Sorin vs. Tibalt',
          'Duel Decks: Speed vs. Cunning',
-         'Khans of Tarkir'
+         'Fate Reforged',
+         'Khans of Tarkir',
+         'Magic 2012',
+         'Magic 2015 Core Set',
+         'Theros'
        ].include?(edition) )
     return false
   else
