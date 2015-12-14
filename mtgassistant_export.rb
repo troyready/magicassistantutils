@@ -510,6 +510,7 @@ def mk_mtg_price(cardxml, outputdir)
               .gsub(/Commander 2013 Edition/, 'Commander 2013')
               .gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
               .gsub(/Annihilation \(2014\)/, 'Annihilation')
+              .gsub(/Modern Masters 2015 Edition/, 'Modern Masters 2015')
     if [
       'Akoum',
       'Aretopolis',
