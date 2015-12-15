@@ -126,7 +126,21 @@ def sendtomtgprice?(cardobj)
          'Magic 2012',
          'Magic 2015 Core Set',
          'Theros'
-       ].include?(edition) )
+       ].include?(edition) ) ||
+     # Misc missing cards
+     (name == 'Bident of Thassa' && edition == 'Launch Parties') ||
+     (name == 'Genesis Hydra' && edition == 'Media Inserts') ||
+     ([
+        'Dragon Fodder',
+        'Dragonlord\'s Servant',
+        'Evolving Wilds'
+      ].include?(name) &&
+      edition == 'Prerelease Events: Dragons of Tarkir') ||
+     ([
+        'Ulamog, the Ceaseless Hunger',
+        'Zada, Hedron Grinder'
+      ].include?(name) &&
+      edition == 'Prerelease Events: Battle For Zendikar')
     return false
   else
     return true
@@ -511,6 +525,10 @@ def mk_mtg_price(cardxml, outputdir)
               .gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
               .gsub(/Annihilation \(2014\)/, 'Annihilation')
               .gsub(/Modern Masters 2015 Edition/, 'Modern Masters 2015')
+              .gsub(/^Limited Edition/, '')
+              .gsub(/Commander's Arsenal/, 'Commanders Arsenal')
+    cardname = 'Sultai Ascendacy' if cardname == 'Sultai Ascendancy' &&
+                                     edition == 'Clash Packs'
     if [
       'Akoum',
       'Aretopolis',
@@ -557,6 +575,7 @@ def mk_mtg_price(cardxml, outputdir)
       edition = 'Planechase 2012 Planes'
     end
     if !(edition.include?('Arena League') ||
+         edition.include?('Commanders Arsenal') ||
          edition.include?('Clash Packs') ||
          edition.include?('Duel Decks') ||
          edition.include?('Friday Night Magic') ||
@@ -568,7 +587,8 @@ def mk_mtg_price(cardxml, outputdir)
          edition.include?('Launch Parties') ||
          edition.include?('Media Inserts') ||
          edition.include?('Player Rewards') ||
-         edition.include?('Prerelease ')) &&
+         edition.include?('Prerelease ') ||
+         edition.include?('Summer of Magic')) &&
        hasparm?('foil', card)
       edition = "#{edition} (Foil)"
       foil = 'true'
