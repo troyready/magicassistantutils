@@ -140,7 +140,7 @@ def sendtomtgprice?(cardobj)
         'Ulamog, the Ceaseless Hunger',
         'Zada, Hedron Grinder'
       ].include?(name) &&
-      edition == 'Prerelease Events: Battle For Zendikar')
+      edition == 'Prerelease Events: Battle for Zendikar')
     return false
   else
     return true
