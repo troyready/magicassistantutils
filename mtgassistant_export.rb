@@ -367,6 +367,7 @@ def mkdeckboxinv(cardxml, outputdir, tradelistfile, tradecountdefault)
                  .gsub('Lim-Dûl\'s Vault', 'Lim-Dul\'s Vault')
       linetoadd << cardname
       linetoadd << card['card'].first['edition'].first
+        .gsub(/Magic: The Gathering-Commander/, 'Commander')
         .gsub(/2012 Edition/, '2012')
         .gsub(/2013 Edition/, '2013')
         .gsub(/Magic: The Gathering—Conspiracy/, 'Conspiracy')
