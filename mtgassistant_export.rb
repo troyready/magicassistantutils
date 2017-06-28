@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-# Copyright 2015 Troy Ready
+# Copyright 2017 Troy Ready
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,15 +40,9 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'json'
-require 'net/http'
-require 'uri'
+require 'mtg_sdk'
+require 'xmlsimple'
 require 'yaml/store'
-
-# Returns an object with the file's parsed contents
-def parsexml(xmlfile)
-  require 'xmlsimple'
-  XmlSimple.xml_in(xmlfile)
-end
 
 def hasparm?(parm, cardobj)
   if cardobj['special']
@@ -81,12 +75,14 @@ def sendtodeckbox?(cardobj)
 end
 
 def sendtodeckedbuilder?(cardobj)
-  # Planechase plains are the specific names here - they're included in the
+  # Planechase planes are the specific names here - they're included in the
   # regular Deckbox 'Planechase' set, but are not on Gatherer
   !(
     (cardobj['special'] && cardobj['special'].first.include?('loantome')) ||
     cardobj['card'].first['edition'].first.start_with?('Extras:') ||
     cardobj['card'].first['edition'].first.start_with?('Oversized:') ||
+    cardobj['card'].first['name'].first.start_with?('Emblem: ') ||
+    cardobj['card'].first['name'].first.start_with?('Marit Lage') ||
     cardobj['card'].first['name'].first.start_with?('Mirrored Depths') ||
     cardobj['card'].first['name'].first.start_with?('Horizon Boughs') ||
     cardobj['card'].first['name'].first.start_with?('Celestine Reef') ||
@@ -216,56 +212,30 @@ def getmultiverseid(cardid, cardname)
   # This will translate your custom database entries into
   # standard multiverse IDs
 
-  uri = URI.parse(
-    "http://api.mtgapi.com/v1/card/name/#{cardname.gsub(/ /, '%20')}"
-  )
+  cards = MTG::Card.where(name: cardname).all
 
-  http = Net::HTTP.new(uri.host, uri.port)
-  request = Net::HTTP::Get.new(uri.request_uri)
-
-  response = http.request(request)
-
-  if response.code == '200'
-    result = JSON.parse(response.body)
-    # Sometimes the api will return a hash like "{"name":"Ponder","id":null}"
-    # Check here for null responses and skip to the next id
-    new_card_id = ''
-    index_under_eval = 0
-    while new_card_id == ''
-      if result[index_under_eval]['id'].is_a?(String)
-        new_card_id = result[index_under_eval]['id']
-      else
-        index_under_eval += 1
-      end
+  # Sometimes the api will return a hash like "{"name":"Ponder","id":null}"
+  # Check here for null responses and skip to the next id
+  new_card_id = ''
+  index_under_eval = 0
+  while new_card_id == ''
+    if cards[index_under_eval].multiverse_id.nil?
+      index_under_eval += 1
+    else
+      new_card_id = cards[index_under_eval].multiverse_id
     end
-    puts "Translating card #{cardname} (card id #{cardid}) to card id "\
-         "#{new_card_id} for Decked Builder"
-    return new_card_id
-  else
-    puts "Unable to translate card #{cardname} (card id #{cardid}) - mtgapi "\
-         "returned http code #{response.code}"
-    return cardid
   end
+
+  puts "Translating card #{cardname} (card id #{cardid}) to card id "\
+       "#{new_card_id} for Decked Builder"
+  return new_card_id
 end
 
 def getcollnumber(cardid, cardname)
   # This will find the card collector number for a given card
 
-  uri = URI.parse("http://api.mtgapi.com/v2/cards?multiverseid=#{cardid}")
-
-  http = Net::HTTP.new(uri.host, uri.port)
-  request = Net::HTTP::Get.new(uri.request_uri)
-
-  response = http.request(request)
-
-  if response.code == '200'
-    result = JSON.parse(response.body)
-    return result['cards'][0]['number']
-  else
-    puts "Unable to find collector's number for #{cardname} - mtgapi "\
-         "returned http code #{response.code}"
-    return ''
-  end
+  card = MTG::Card.find cardid
+  return card.number
 end
 
 def mkcoll2(xml, outputfile)
@@ -286,7 +256,7 @@ def mkcoll2(xml, outputfile)
         cardid = getmultiverseid(
           card['card'].first['id'].first,
           card['card'].first['name'].first
-        )
+        ).to_s
       end
     else
       cardid = card['card'].first['id'].first
@@ -717,7 +687,7 @@ if __FILE__ == $PROGRAM_NAME
   end
 
   # Option set; start the processing
-  mainxml = parsexml(options[:inputfile])
+  mainxml = XmlSimple.xml_in(options[:inputfile])
 
   mkdecklist(mainxml, options[:outputdir])
 

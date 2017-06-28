@@ -40,3 +40,5 @@ nosetests.xml
 
 # RDoc
 doc/
+
+Gemfile.lock
