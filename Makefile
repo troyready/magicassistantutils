@@ -3,7 +3,7 @@ clean:
 	rm -rf dist/
 
 test:
-	pipenv sync --three
+	PIPENV_IGNORE_VIRTUALENVS=1 pipenv sync --three
 	pipenv run flake8 magicassistantutils
 	pipenv run mypy magicassistantutils
 	pipenv run python setup.py test
