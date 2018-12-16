@@ -9,8 +9,8 @@ class Card(object):  # pylint: disable=too-few-public-methods
 
     def __init__(self,
                  properties: Dict[str, str],
-                 count: int=0,
-                 special: Optional[str]=None) -> None:
+                 count: int = 0,
+                 special: Optional[str] = None) -> None:
         """Set up Card."""
         self.properties = properties
         self.count = count

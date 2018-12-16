@@ -12,7 +12,7 @@ import yaml
 class CollNumberMapping(object):
     """Mapping of Multiverse Ids to Collector numbers."""
 
-    def __init__(self, path: Optional[str]=None) -> None:
+    def __init__(self, path: Optional[str] = None) -> None:
         """Set up CollNumberMapping."""
         if path is None:
             path = os.path.join(
