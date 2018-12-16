@@ -1,8 +1,6 @@
-# staging data files
-magicdeckboxstaging.csv
-tradelist.yml
-
 *.py[cod]
+.mypy_cache
+__pycache__
 
 # C extensions
 *.so
