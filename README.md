@@ -1,4 +1,5 @@
 # magicassistantutils
+[![Build Status](https://travis-ci.org/troyready/magicassistantutils.svg?branch=master)](https://travis-ci.org/troyready/magicassistantutils)
 
 Helper utilities to parse a Magic Assistant collection and export DeckBox.org and Apprentice format files.
 
@@ -6,7 +7,7 @@ Python 3+ is required.
 
 ## Export to Deckbox.org
 
-1. Install magicassistantutils in your project: `pipenv install --three git+https://github.com/troyready/magicassistantutils.git#egg=magicassistantutils`
+1. Install magicassistantutils in your project: `pipenv install --three -e git+https://github.com/troyready/magicassistantutils.git#egg=magicassistantutils`
 2. Create your export script:
 ```
 #!/usr/bin/env python3
